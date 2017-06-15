@@ -1,0 +1,71 @@
+{% extends "AppBundle::base.html.twig" %}
+
+{% block title %}{{ gameName }} - Création du personnage {% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        
+        <h2 class="page-header">Création de personnage</h2>
+        {{ form_start(form, {'attr': {'name': 'create_character_form'}}) }}
+        
+        {{ form_errors(form) }}
+        
+        
+        <div class="form-group row">
+            <div class="col-lg-3">
+                {{ form_label(form.name, "Nom du personnage", {'label_attr': {'class': 'col-2 col-form-label'}}) }}
+                
+                {{ form_errors(form.name) }}
+                
+                
+                {{ form_widget(form.name, {'attr':
+                    {
+                        'class': 'form-control'
+                    }
+                }) }}
+            </div>
+        
+        
+        </div>
+        
+        <div class="form-group row">
+            <div class="col-lg-6">
+                {{ form_label(form.backstory, "Histoire", {'label_attr': {'class': 'control-label'}}) }}
+                
+                {{ form_errors(form.backstory) }}
+                
+                
+                {{ form_widget(form.backstory, {'attr':
+                    {
+                        'class': 'form-control'
+                    }
+                }) }}
+            </div>
+        
+        
+        </div>
+        
+
+       {{ form_row(form.token) }}
+        
+        {{ form_rest(form) }}
+    
+        <div class="row">
+            {{ form_widget(form.save,
+            {   'attr': {'class': 'btn'},
+                'label':'Créer'}) }}
+    
+        </div>
+        
+        {{ form_end(form) }}
+    
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}

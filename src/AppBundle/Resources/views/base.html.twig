@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Drilliak">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/AppBundle/base.css') }}">
+    {% endblock %}
+</head>
+<body>
+{% for type, flashes in app.session.flashbag.all %}
+    <div class="container">
+        {% for flash in flashes %}
+            <div class="alert alert-{{ type }} alert-dismissable">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{ flash }}
+            </div>
+        {% endfor %}
+    </div>
+{% endfor %}
+
+{% block header %}
+    <header>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="{{ path('homepage') }}">Just Dice Rolls</a>
+                </div>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav">
+                        <li><a href="{{ path('homepage') }}">Accueil</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"aria-haspopup="true" aria-expanded="false">
+                                Partie
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{{ path('show_games_as_player') }}">En tant que joueur</a></li>
+                                <li><a href="{{ path('show_games_as_mj') }}">En tant que MJ</a></li>
+                            </ul>
+                        </li>
+                        
+                        <li><a href="">À propos</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                               aria-haspopup="true"
+                               aria-expanded="false">{{ app.user.username }}<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{{ path('fos_user_profile_show') }}">Profil</a></li>
+                                <li><a href="{{ path('fos_user_security_logout') }}">Déconnexion</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+{% endblock %}
+
+{% block content %}{% endblock %}
+
+{% block footer %}
+
+{% endblock %}
+
+{% block javascripts %}
+    
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <div id="js-vars" data-vars="{{ js_vars|json_encode|e('html_attr') }}"></div>
+    <script>
+    
+    </script>
+{% endblock %}
+</body>
+</html>

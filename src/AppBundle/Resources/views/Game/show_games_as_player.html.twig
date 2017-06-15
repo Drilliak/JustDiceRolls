@@ -1,0 +1,30 @@
+{% extends "AppBundle::base.html.twig" %}
+
+{% block title %}{{ app.user.username }} - Parties en tant que joueur {% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        
+        <h2 class="page-header">Mes parties en tant que joueur </h2>
+        {% for player in players %}
+            <div class="row">
+                <div class="list-group col-lg-6">
+                    <a href="{{ path('game_play_as_mj', {'idGame': player.game.id }) }}" class="list-group-item">
+                        <small class="pull-right">{{ player.game.gamemaster.username }}</small>
+                        <h4 class="list-group-item-heading">{{ player.game.name }}</h4>
+                        <p class="list-group-item-text">{{ player.game.description|truncate(100, true) }}</p>
+                    </a>
+                </div>
+            </div>
+        
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}

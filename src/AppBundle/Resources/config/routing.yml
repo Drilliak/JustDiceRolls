@@ -1,0 +1,59 @@
+homepage:
+    path: /
+    defaults:
+        _controller: AppBundle:Home:index
+    methods: [GET]
+
+game_edition:
+    path: /edition-partie/{idGame}
+    defaults:
+        _controller: AppBundle:GameEditor:edit
+    methods: [GET]
+
+game_edition_ajax:
+    path: /ajax/edition-partie
+    defaults:
+        _controller: AppBundle:GameEditor:editAjax
+    methods: [GET, POST]
+
+game_edition_autocomplete:
+    path: /edition-partie-autocomplete-username
+    defaults:
+        _controller: AppBundle:GameEditor:autocomplete
+    methods: [GET]
+
+game_create:
+    path: /creation-partie
+    defaults:
+        _controller: AppBundle:Game:createNewGame
+    methods: [GET]
+
+game_play_as_mj:
+    path: /partie-en-tant-que-mj/{idGame}
+    defaults:
+        _controller: AppBundle:Game:playAsMj
+    methods: [GET]
+
+game_play_as_player:
+    path: /partie-en-tant-que-joueur/{idGame}
+    defaults:
+        _controller: AppBundle:Game:playAsPlayer
+    methods: [GET]
+
+game_create_character:
+    path: /creation-personnage/{idGame}
+    defaults:
+        _controller: AppBundle:Game:createCharacter
+    methods: [GET, POST]
+
+show_games_as_player:
+    path: /parties-en-tant-que-joueur
+    defaults:
+        _controller: AppBundle:Game:showGamesAsPlayer
+    methods: [GET]
+
+show_games_as_mj:
+    path: /parties-en-tant-que-mj
+    defaults:
+        _controller: AppBundle:Game:showGamesAsGm
+    methods: [GET]
