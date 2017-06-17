@@ -54,7 +54,7 @@ class Characteristic
      * @var
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PlayerCharacter", inversedBy="characteristics")
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\JoinColumn(nullable=false)
      */
     private $playerCharacter;
 
@@ -201,29 +201,5 @@ class Characteristic
     public function getMaxValue()
     {
         return $this->maxValue;
-    }
-
-    /**
-     * Set playerCharacter
-     *
-     * @param \AppBundle\Entity\PlayerCharacter $playerCharacter
-     *
-     * @return Characteristic
-     */
-    public function setPlayerCharacter(\AppBundle\Entity\PlayerCharacter $playerCharacter)
-    {
-        $this->playerCharacter = $playerCharacter;
-
-        return $this;
-    }
-
-    /**
-     * Get playerCharacter
-     *
-     * @return \AppBundle\Entity\PlayerCharacter
-     */
-    public function getPlayerCharacter()
-    {
-        return $this->playerCharacter;
     }
 }

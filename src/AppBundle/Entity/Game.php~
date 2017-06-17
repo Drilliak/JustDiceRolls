@@ -5,7 +5,6 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use UserBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
-use AppBundle\Entity\Characteristic;
 
 /**
  * Game
@@ -50,6 +49,7 @@ class Game
     /**
      * @var string
      * @ORM\Column(name="description", type="text")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $description;
 
@@ -180,5 +180,29 @@ class Game
     public function getPlayers()
     {
         return $this->players;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Game
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 }

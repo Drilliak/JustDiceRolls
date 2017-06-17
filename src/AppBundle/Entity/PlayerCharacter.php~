@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Exception\PlayerChracterException;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -39,20 +41,26 @@ class PlayerCharacter
     /**
      * @var array
      *
-     * @ORM\Column(name="characteristics", type="array")
+     *
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Characteristic", mappedBy="playerCharacter")
+     *
      */
     private $characteristics;
 
     /**
      * @ORM\Column(type="string")
-     * @ORM\Column(type="string")
      * @Assert\File(
-     *     mimeTypes={"/image"},
-     *     mimeTypesMessage="Please upload a valid image."
+     *     mimeTypes={"image/png"},
+     *     mimeTypesMessage="Veuillez choisir une image au format png."
      * )
      */
     private $token;
 
+
+    public function __construct()
+    {
+        $this->characteristics = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -112,10 +120,36 @@ class PlayerCharacter
         return $this->backStory;
     }
 
+
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return PlayerCharacter
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
     /**
      * Set characteristics
      *
-     * @param array $characteristics
+     * @param string $characteristics
      *
      * @return PlayerCharacter
      */
@@ -129,11 +163,10 @@ class PlayerCharacter
     /**
      * Get characteristics
      *
-     * @return array
+     * @return string
      */
     public function getCharacteristics()
     {
         return $this->characteristics;
     }
 }
-

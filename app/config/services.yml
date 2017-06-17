@@ -17,3 +17,11 @@ services:
         class: Twig_Extensions_Extension_Text
         tags:
             - { name: twig.extension }
+    app.name_formatter:
+        class: AppBundle\Service\NameFormatter
+    app.twig.name_formatter_extension:
+        class: AppBundle\Service\NameFormatterExtension
+        arguments:
+            - "@app.name_formatter"
+        tags:
+            - { name: twig.extension }

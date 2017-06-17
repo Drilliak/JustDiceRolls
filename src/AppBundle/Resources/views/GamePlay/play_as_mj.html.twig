@@ -9,8 +9,20 @@
 {% endblock %}
 
 {% block content %}
+    <div class="container">
+        <table class="table table-striped">
+            <thead>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+    </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+
+    <script src="{{ asset('js/AppBundle/GamePlay/play_as_mj.js') }}"></script>
+
 {% endblock %}

@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use AppBundle\Entity\Exception\PlayerChracterException;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -40,7 +41,10 @@ class PlayerCharacter
     /**
      * @var array
      *
-     * @ORM\Column(name="characteristics", type="array")
+     *
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Characteristic", mappedBy="playerCharacter")
+     * @ORM\OrderBy({"name" = "ASC" })
+     *
      */
     private $characteristics;
 
@@ -53,6 +57,11 @@ class PlayerCharacter
      */
     private $token;
 
+
+    public function __construct()
+    {
+        $this->characteristics = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -112,51 +121,7 @@ class PlayerCharacter
         return $this->backStory;
     }
 
-    /**
-     * Set characteristics
-     *
-     * @param array $characteristics
-     *
-     * @return PlayerCharacter
-     */
-    public function setCharacteristics($characteristics)
-    {
-        $this->characteristics = $characteristics;
 
-        return $this;
-    }
-
-    /**
-     * Get characteristics
-     *
-     * @return array
-     */
-    public function getCharacteristics()
-    {
-        return $this->characteristics;
-    }
-
-    public function addCharacteristic($name, $value = 0, $hasMax = false){
-        if ($hasMax){
-            $this->characteristics[$name] = $value;
-        } else {
-            $this->characteristics[$name] = $value;
-            $this->characteristics[$name . 'Max'] = $value;
-        }
-    }
-
-    /**
-     * Affecte une valeur à une caractéristiques en fonction de son nom
-     * @param $name
-     * @param $value
-     * @throws PlayerChracterException
-     */
-    public function setCharacteristic($name, $value){
-        if (!array_key_exists($name, $this->characteristics)){
-            throw new PlayerChracterException("The given key is not set in the array.");
-        }
-        $this->characteristics[$name] = $value;
-    }
 
     /**
      * Set token
@@ -180,5 +145,53 @@ class PlayerCharacter
     public function getToken()
     {
         return $this->token;
+    }
+
+    /**
+     * Set characteristics
+     *
+     * @param string $characteristics
+     *
+     * @return PlayerCharacter
+     */
+    public function setCharacteristics($characteristics)
+    {
+        $this->characteristics = $characteristics;
+
+        return $this;
+    }
+
+    /**
+     * Get characteristics
+     *
+     * @return array
+     */
+    public function getCharacteristics()
+    {
+        return $this->characteristics;
+    }
+
+    /**
+     * Add characteristic
+     *
+     * @param \AppBundle\Entity\Characteristic $characteristic
+     *
+     * @return PlayerCharacter
+     */
+    public function addCharacteristic(\AppBundle\Entity\Characteristic $characteristic)
+    {
+        $this->characteristics[] = $characteristic;
+        $characteristic->setPlayerCharacter($this);
+        return $this;
+    }
+
+    /**
+     * Remove characteristic
+     *
+     * @param \AppBundle\Entity\Characteristic $characteristic
+     */
+    public function removeCharacteristic(\AppBundle\Entity\Characteristic $characteristic)
+    {
+        $this->characteristics->removeElement($characteristic);
     }
 }

@@ -1,6 +1,8 @@
 <?php
 
 namespace AppBundle\Repository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Query;
 
 /**
  * ParticipantsRepository
@@ -55,4 +57,5 @@ class PlayerRepository extends \Doctrine\ORM\EntityRepository
             return null;
         }
     }
+
 }

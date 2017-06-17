@@ -10,8 +10,6 @@ use AppBundle\Form\PlayerCharacterType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-
 
 
 class GameController extends Controller
@@ -40,57 +38,7 @@ class GameController extends Controller
 
     }
 
-    public function playAsMjAction($idGame)
-    {
-        $gameRepository = $this->getDoctrine()->getManager()->getRepository('AppBundle:Game');
-        $game = $gameRepository->find($idGame);
 
-        // Si aucune game n'est trouvée, on redirige vers la page d'accueil
-        // avec un message spécifiant le problème.
-        if ($game == null) {
-            $this->addFlash('warning', "Vous avez tenté d'accéder à la page d'une partie inexistance");
-            return $this->redirectToRoute('homepage');
-        }
-
-        $currentUserId = $this->get('security.token_storage')->getToken()->getUser()->getId();
-        $gameMasterId = $this->getDoctrine()->getManager()->getRepository('AppBundle:Game')->find($idGame)->getGameMaster()->getId();
-
-        // Si un utilisateur autre que le maître du jeu essaie d'accéder à la page
-        // on le redirige avec un message spécifiant le problème
-        if ($currentUserId != $gameMasterId) {
-            $this->addFlash('danger', "Vous ne possédez pas les droits nécessaires pour accéder à cette page");
-            return $this->redirectToRoute('homepage');
-        }
-
-        return $this->render("AppBundle:Game:play_as_mj.html.twig", [
-                "gameName" => $game->getName(),
-            ]
-        );
-    }
-
-    public function playAsPlayerAction($idGame)
-    {
-
-        $playerRepository = $this->getDoctrine()->getManager()->getRepository('AppBundle:Player');
-        $gameRepository = $this->getDoctrine()->getManager()->getRepository('AppBundle:Game');
-
-        $game = $gameRepository->find($idGame);
-
-        $currentUserId = $this->get('security.token_storage')->getToken()->getUser()->getId();
-        $player = $playerRepository->findPlayer($idGame, $currentUserId);
-
-        if ($player == null) {
-            $this->addFlash('danger', "Vous n'avez pas été invité à participer à cette partie.");
-            return $this->redirectToRoute('homepage');
-        }
-
-        if ($player->getCharacter() == null) {
-            return $this->redirectToRoute('game_create_character', ['idGame' => $idGame]);
-        }
-
-
-        return $this->render('@App/Game/play_as_player.html.twig', ['gameName' => $game->getName()]);
-    }
 
     public function createCharacterAction(Request $request, $idGame){
 
@@ -131,10 +79,10 @@ class GameController extends Controller
             /** @var Characteristic $allowedCharacteristic */
             foreach($allowedCharacteristics as $allowedCharacteristic){
                 if ($allowedCharacteristic->getHasMax()){
-                    $playerCharacter->addCharacteristic($allowedCharacteristic->getName(),0,true);
-                } else {
-                    $playerCharacter->addCharacteristic($allowedCharacteristic->getName());
+                    $allowedCharacteristic->setMaxValue(0);
                 }
+                $allowedCharacteristic->setValue(0);
+                $playerCharacter->addCharacteristic($allowedCharacteristic);
             }
 
             $player->setCharacter($playerCharacter);
