@@ -81,3 +81,14 @@ fos_user:
     from_email:
         address: test
         sender_name: test
+
+liip_imagine:
+    resolvers:
+        default:
+            web_path: ~
+    filter_sets:
+        thumb_token_filter:
+            filters:
+                thumbnail:
+                    size: [64,64]
+                    mode: outbound

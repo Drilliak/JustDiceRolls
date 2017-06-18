@@ -4,6 +4,8 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Characteristic;
 use AppBundle\Entity\Game;
+use AppBundle\Entity\PlayerCharacter;
+use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Entity\Player;
 use Symfony\Component\HttpFoundation\Request;
@@ -80,13 +82,16 @@ class GamePlayController extends Controller
 
         $this->get('acme.js_vars')->charData = [
             "allowedCharacteristics" => $allowedCharacteristics,
-            "players" => $players,
-            "ajaxPath" => $this->generateUrl("game_play_mj_ajax"),
-            "gameId" => $game->getId(),
+            "players"                => $players,
+            "ajaxPath"               => $this->generateUrl("game_play_mj_ajax"),
+            "gameId"                 => $game->getId(),
         ];
+
+
 
         return $this->render("AppBundle:GamePlay:play_as_mj.html.twig", [
                 "gameName" => $game->getName(),
+                "gameId"   => $game->getId(),
             ]
         );
     }
@@ -94,10 +99,23 @@ class GamePlayController extends Controller
     public function playAsMjAjaxAction(Request $request)
     {
         // if ($request->isXmlHttpRequest()){
-        $playerId = $request->get('playerId');
-        $characteristicName = $request->get('characteristic');
-        $newValue = $request->get('newValue');
-        $gameId = $request->get('gameId');
+        $action = $request->get('action');
+        switch ($action) {
+            case "update-stat":
+                $playerId = $request->get('playerId');
+                $characteristicName = $request->get('characteristic');
+                $newValue = $request->get('newValue');
+                return $this->updateStat($playerId, $characteristicName, $newValue);
+            case "get-data-character":
+                $idPlayer = $request->get('playerId');
+                return $this->getDataCharacter($idPlayer);
+        }
+        // }
+        return new Response("This is not an AJAX request");
+    }
+
+    private function updateStat($playerId, $characteristicName, $newValue)
+    {
 
         $em = $this->getDoctrine()->getManager();
         $playerRepository = $em->getRepository('AppBundle:Player');
@@ -126,8 +144,22 @@ class GamePlayController extends Controller
             }
         }
         return new JsonResponse("failed");
-        // }
-        return new Response("This is not an AJAX request");
+    }
+
+    private function getDataCharacter($idPlayer)
+    {
+        $playerRepository = $this->getDoctrine()->getManager()->getRepository('AppBundle:Player');
+
+        $player = $playerRepository->find($idPlayer);
+
+        /** @var PlayerCharacter $character */
+        $character = $player->getCharacter();
+        $tokenPath = $this->get('assets.packages')->getUrl('img/tokens/') . $character->getToken();
+        /** @var CacheManager $imagineCacheManager */
+        $imagineCacheManager = $this->get('liip_imagine.cache.manager');
+        $path = $imagineCacheManager->getBrowserPath('img/tokens/' . $player->getCharacter()->getToken(), "thumb_token_filter");
+        $res = ["tokenPath" => $path,];
+        return new JsonResponse($res);
     }
 
     public function playAsPlayerAction($idGame)

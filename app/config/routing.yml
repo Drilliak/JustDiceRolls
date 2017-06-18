@@ -3,3 +3,6 @@ user:
 
 app:
     resource: '@AppBundle/Resources/config/routing.yml'
+
+_liip_imagine:
+    resource: "@LiipImagineBundle/Resources/config/routing.xml"

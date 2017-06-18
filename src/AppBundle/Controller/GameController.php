@@ -20,10 +20,12 @@ class GameController extends Controller
         $gameName = $request->get('game-name');
         $pv = new Characteristic("PV", true);
         $mana = new Characteristic("Mana", true);
+        $level = new Characteristic("Niveau");
         $gameMaster = $this->get('security.token_storage')->getToken()->getUser();
 
         $game = new Game();
         $game->setName($gameName);
+        $game->addAllowedCharacteristic($level);
         $game->addAllowedCharacteristic($pv);
         $game->addAllowedCharacteristic($mana);
         $game->setGameMaster($gameMaster);

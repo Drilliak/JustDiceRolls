@@ -10,6 +10,19 @@
 
 {% block content %}
     <div class="container">
+        <div class="row">
+
+            <a class="pull-right btn btn-default" data-toggle="tooltip"
+               title="Éditer la configuration de la partie" href="{{ path('game_edition', {'idGame': gameId}) }}"><span
+                        class="glyphicon glyphicon-cog"></span></a>
+            <div class="dropdown pull-right" id="hidden-characteristics-menu">
+                <button class="btn btn-default dropdown-toggle"
+                        type="button" data-toggle="dropdown">Caractéristiques masquées <span class="caret"></span>
+                </button>
+                <ul id="hidden-characteristics" class="dropdown-menu"> </ul>
+            </div>
+        </div>
+
         <table class="table table-striped">
             <thead>
             </thead>
