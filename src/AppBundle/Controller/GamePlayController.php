@@ -6,6 +6,9 @@ use AppBundle\Entity\Characteristic;
 use AppBundle\Entity\Game;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Entity\Player;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 
 class GamePlayController extends Controller
@@ -61,12 +64,11 @@ class GamePlayController extends Controller
 
                 $characteristics = [];
                 /** @var Characteristic $characteristic */
-                dump($player->getCharacter()->getCharacteristics()->toArray());
                 foreach ($player->getCharacter()->getCharacteristics() as $characteristic) {
 
                     $characteristics[$formatter->format($characteristic->getName())] = $characteristic->getValue();
                     if ($characteristic->getHasMax()) {
-                        $characteristics[$formatter->format($characteristic->getName().'max')] = $characteristic->getMaxValue();
+                        $characteristics[$formatter->format($characteristic->getName() . 'max')] = $characteristic->getMaxValue();
                     }
                 }
                 $playerData['characteristics'] = $characteristics;
@@ -78,13 +80,54 @@ class GamePlayController extends Controller
 
         $this->get('acme.js_vars')->charData = [
             "allowedCharacteristics" => $allowedCharacteristics,
-            "players"                => $players,
+            "players" => $players,
+            "ajaxPath" => $this->generateUrl("game_play_mj_ajax"),
+            "gameId" => $game->getId(),
         ];
 
         return $this->render("AppBundle:GamePlay:play_as_mj.html.twig", [
                 "gameName" => $game->getName(),
             ]
         );
+    }
+
+    public function playAsMjAjaxAction(Request $request)
+    {
+        // if ($request->isXmlHttpRequest()){
+        $playerId = $request->get('playerId');
+        $characteristicName = $request->get('characteristic');
+        $newValue = $request->get('newValue');
+        $gameId = $request->get('gameId');
+
+        $em = $this->getDoctrine()->getManager();
+        $playerRepository = $em->getRepository('AppBundle:Player');
+        $player = $playerRepository->find(["id" => $playerId]);
+
+        /** @var \AppBundle\Entity\PlayerCharacter $character */
+        $character = $player->getCharacter();
+        $characteristics = $character->getCharacteristics();
+
+        $formatter = $this->get('app.name_formatter');
+        /** @var Characteristic $characteristic */
+        foreach ($characteristics as $characteristic) {
+            if ($formatter->format($characteristic->getName()) == $characteristicName ||
+                $formatter->format($characteristic->getName() . "max") == $characteristicName
+            ) {
+                $character->removeCharacteristic($characteristic);
+                if (strpos($characteristicName, "max") === FALSE) {
+                    $characteristic->setValue($newValue);
+                } else {
+                    $characteristic->setMaxValue($newValue);
+                }
+                $character->addCharacteristic($characteristic);
+                $player->setCharacter($character);
+                $em->flush();
+                return new JsonResponse("success");
+            }
+        }
+        return new JsonResponse("failed");
+        // }
+        return new Response("This is not an AJAX request");
     }
 
     public function playAsPlayerAction($idGame)

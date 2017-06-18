@@ -57,3 +57,9 @@ show_games_as_mj:
     defaults:
         _controller: AppBundle:Game:showGamesAsGm
     methods: [GET]
+
+game_play_mj_ajax:
+    path: /ajax/play-as-mj
+    defaults:
+        _controller: AppBundle:GamePlay:playAsMjAjax
+    methods: [POST]
