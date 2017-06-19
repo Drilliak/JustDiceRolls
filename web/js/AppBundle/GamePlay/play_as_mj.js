@@ -41,7 +41,7 @@ function format(text) {
 (function () {
     let headers = `<tr class="header"><th class="user">Utilisateur</th><th class="character">Personnage</th>`;
     for (allowedCharacteristic of allowedCharacteristics) {
-        headers += `<th class="${format(allowedCharacteristic)}">${allowedCharacteristic}</th>`;
+        headers += `<th class="${format(allowedCharacteristic)}">${allowedCharacteristic} <span class="glyphicon glyphicon-eye-close pull-right"></span></th>`;
     }
     headers += `</tr>`;
     $('table thead').append(headers);
@@ -98,12 +98,12 @@ function format(text) {
  * Masque une colonne
  */
 (function () {
-    $(document).on('click', 'table thead th', function () {
+    $(document).on('click', 'table thead th .glyphicon-eye-close', function () {
         if (nbCharacteristicsHidden == 0)
             $('#hidden-characteristics-menu').show();
         nbCharacteristicsHidden++;
-        let characteristicName = $(this).attr('class');
-        let nameShowed = $(this).text();
+        let characteristicName = $(this).parent().attr('class');
+        let nameShowed = $(this).parent().text();
         $('.' + characteristicName).hide();
         $('#hidden-characteristics').append(`
             <li id="${characteristicName}"><a class="hidden-characteristic" href="javascript:void(0)">${nameShowed}</a></li>
@@ -125,6 +125,16 @@ function format(text) {
     });
 })();
 
+function createProgressBar(width, text="", classStyle=null) {
+    let availableStyles =['progress-bar-success', 'progress-bar-info', 'progress-bar-warning', 'progress-bar-danger'];
+    if (classStyle === null){
+        classStyle = availableStyles[Math.floor(Math.random()*availableStyles.length)];
+    }
+    return `<div class="progress">
+                 <div class="progress-bar ${classStyle} progress-bar-striped active" role="progressbar" style="width:${width}%">${text}</div>
+            </div>`;
+}
+
 /**
  * Affiche ou masque la fiche personnage
  */
@@ -141,26 +151,40 @@ function format(text) {
             },
             function (data) {
                 let tokenPath = data.tokenPath;
+                let characteristics = data.characteristics;
+
+                let strToDisplay = '';
+
+                for (let characteristic in characteristics){
+                    strToDisplay += `
+                        <div class="form-group">
+                            <label class="col-xs-2 col-lg-1 control-label">${characteristic}</label>`;
+
+                    if (characteristics[characteristic].max !== undefined){
+                        let width = characteristics[characteristic].value / characteristics[characteristic].max *100;
+                        strToDisplay += `<div class="col-xs-6 col-lg-4" style="margin-top:7px">
+                                        ${createProgressBar(width, characteristics[characteristic].value + '/' +characteristics[characteristic].max)}
+                                        </div>`;
+                    } else {
+                        strToDisplay = strToDisplay += `<div class="col-xs-6 col-lg-4" style="margin-top: 7px;">${characteristics[characteristic].value}</div>`;
+                    }
+                    strToDisplay += `</div>`;
+                }
+
                 closestTr.after(`
                 <tr id="${'player-data-' + playerId}">
                     <th colspan="${allowedCharacteristics.length + 2}">
                         <div class="container">
-                            <div class="row clearfix">
-                                <div class="pull-left" style="margin-right: 10px;">
-                                    <img src="${tokenPath}">
+                            <fieldset>
+                                <legend>Caractéristiques</legend>
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <p>Content</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <ul class="list-unstyled">
-                                        <li class="clearfix"> <span class="pull-left" style="margin-right: 5px;">PV </span> 
-                                           <div class="progress">
-                                                <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" 
-                                                aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%"></div>
-                                            </div> 
-                                        </li>
-                                        <li>Test2</li>
-                                    </ul>
-                                </div>
-                            </div>
+                            </fieldset>
+                            <form class="form-horizontal">
+                            </form>
                             
                         </div>                        
                     </th>

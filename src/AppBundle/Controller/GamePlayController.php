@@ -159,7 +159,8 @@ class GamePlayController extends Controller
         /** @var CacheManager $imagineCacheManager */
         $imagineCacheManager = $this->get('liip_imagine.cache.manager');
         $path = $imagineCacheManager->getBrowserPath('img/tokens/' . $player->getCharacter()->getToken(), "thumb_token_filter");
-        $res = ["tokenPath" => $path,];
+
+        $res = ["tokenPath" => $path, "characteristics" => ['PV' => ['value' => 5, 'max' =>10], 'Mana' => ['value' => 7]]];
         return new JsonResponse($res);
     }
 
