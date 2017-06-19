@@ -145,19 +145,21 @@ function format(text) {
                 <tr id="${'player-data-' + playerId}">
                     <th colspan="${allowedCharacteristics.length + 2}">
                         <div class="container">
-                            <div class="col-xs-2 col-sm-1">
-                                <img src="${tokenPath}">
-                            </div>
-                            <div class="col-xs-10 col-sm-11">
-                                <ul class="list-group">
-                                    <li class="list-group-item">
-                                       <div class="progress">
-                                            <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" 
-                                            aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%"></div>
-                                        </div> 
-                                    </li>
-                                    <li class="list-group-item">Test2</li>
-                                </ul>
+                            <div class="row clearfix">
+                                <div class="pull-left" style="margin-right: 10px;">
+                                    <img src="${tokenPath}">
+                                </div>
+                                <div>
+                                    <ul class="list-unstyled">
+                                        <li class="clearfix"> <span class="pull-left" style="margin-right: 5px;">PV </span> 
+                                           <div class="progress">
+                                                <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" 
+                                                aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%"></div>
+                                            </div> 
+                                        </li>
+                                        <li>Test2</li>
+                                    </ul>
+                                </div>
                             </div>
                             
                         </div>                        
@@ -180,22 +182,22 @@ function format(text) {
 /**
  * Affichage clique droit différent sur les barres de progressions
  */
-(function(){
+(function () {
 
     let contextMenu = $('#context-menu');
 
-    $(document).on('contextmenu', '.progress-bar',function(e){
+    $(document).on('contextmenu', '.progress-bar', function (e) {
         lastProgressBarSelected = $(this);
         contextMenu.css({
-           display: "block",
+            display: "block",
             left: e.pageX,
             top: e.pageY
         });
 
-        $(document).mouseup(function(e){
-           if (!contextMenu.is(e.target) && contextMenu.has(e.target).length === 0) {
-               contextMenu.hide();
-           }
+        $(document).mouseup(function (e) {
+            if (!contextMenu.is(e.target) && contextMenu.has(e.target).length === 0) {
+                contextMenu.hide();
+            }
         });
         return false;
     });
@@ -204,11 +206,11 @@ function format(text) {
 /**
  * Changement de la barre de progression au clique sur le menu
  */
-(function(){
+(function () {
     let contextMenu = $('#context-menu');
-    $(document).on('click', '#context-menu .progress-bar', function(){
-       let newClass = $(this).attr('class');
-       lastProgressBarSelected.removeClass().addClass(newClass);
+    $(document).on('click', '#context-menu .progress-bar', function () {
+        let newClass = $(this).attr('class');
+        lastProgressBarSelected.removeClass().addClass(newClass);
     });
 
 })();

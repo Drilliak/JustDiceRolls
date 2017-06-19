@@ -98,6 +98,7 @@ class GamePlayController extends Controller
 
     public function playAsMjAjaxAction(Request $request)
     {
+
         // if ($request->isXmlHttpRequest()){
         $action = $request->get('action');
         switch ($action) {
