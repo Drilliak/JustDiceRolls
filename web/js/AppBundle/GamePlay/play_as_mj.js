@@ -7,6 +7,7 @@ let gameId = jsVars.gameId;
 
 let canonicalAllowedCharacteristics = [];
 
+let lastProgressBarSelected;
 let nbCharacteristicsHidden = 0;
 $('#hidden-characteristics-menu').hide();
 
@@ -173,4 +174,41 @@ function format(text) {
         $(this).toggleClass('glyphicon-menu-up glyphicon-menu-down');
         $("#player-data-" + playerId).remove();
     });
+})();
+
+
+/**
+ * Affichage clique droit différent sur les barres de progressions
+ */
+(function(){
+
+    let contextMenu = $('#context-menu');
+
+    $(document).on('contextmenu', '.progress-bar',function(e){
+        lastProgressBarSelected = $(this);
+        contextMenu.css({
+           display: "block",
+            left: e.pageX,
+            top: e.pageY
+        });
+
+        $(document).mouseup(function(e){
+           if (!contextMenu.is(e.target) && contextMenu.has(e.target).length === 0) {
+               contextMenu.hide();
+           }
+        });
+        return false;
+    });
+})();
+
+/**
+ * Changement de la barre de progression au clique sur le menu
+ */
+(function(){
+    let contextMenu = $('#context-menu');
+    $(document).on('click', '#context-menu .progress-bar', function(){
+       let newClass = $(this).attr('class');
+       lastProgressBarSelected.removeClass().addClass(newClass);
+    });
+
 })();

@@ -1,0 +1,18 @@
+.progress{
+    margin-bottom: 5px;
+}
+
+#context-menu{
+    position:absolute;
+    display: none;
+}
+
+#context-menu .dropdown-menu{
+    display:block;
+    position:static;
+    margin-bottom:5px;
+}
+
+#context-menu .progress-bar{
+    width:100%;
+}

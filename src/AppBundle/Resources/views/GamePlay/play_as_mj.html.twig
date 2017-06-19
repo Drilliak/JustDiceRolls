@@ -5,11 +5,16 @@
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('css/jquery-ui.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/AppBundle/GamePlay/play_as_mj.css') }}">
 
 {% endblock %}
 
 {% block content %}
     <div class="container">
+        <div class="progress">
+            <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar"
+                 aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%"></div>
+        </div>
         <div class="row">
 
             <a class="pull-right btn btn-default" data-toggle="tooltip"
@@ -19,7 +24,7 @@
                 <button class="btn btn-default dropdown-toggle"
                         type="button" data-toggle="dropdown">Caractéristiques masquées <span class="caret"></span>
                 </button>
-                <ul id="hidden-characteristics" class="dropdown-menu"> </ul>
+                <ul id="hidden-characteristics" class="dropdown-menu"></ul>
             </div>
         </div>
 
@@ -29,7 +34,77 @@
             <tbody>
             </tbody>
         </table>
+    </div>
+    <div id="context-menu" class="dropdown clearfix">
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+            <li>
+                <a href="#">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar"
+                             aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar"
+                             aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar"
+                             aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar"
+                             aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </a>
+            </li>
 
+            <li class="divider"></li>
+
+            <li>
+                <a href="#">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-success" role="progressbar"
+                             aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-info" role="progressbar"
+                             aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-warning" role="progressbar"
+                             aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-danger" role="progressbar"
+                             aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </a>
+            </li>
+        </ul>
     </div>
 {% endblock %}
 
