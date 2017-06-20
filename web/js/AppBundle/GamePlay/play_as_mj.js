@@ -1,14 +1,12 @@
 let jsVars = jQuery('#js-vars').data('vars').charData;
 
-let allowedCharacteristics = jsVars.allowedCharacteristics;
 let players = jsVars.players;
 let ajaxPath = jsVars.ajaxPath;
-let gameId = jsVars.gameId;
 
-let canonicalAllowedCharacteristics = [];
 
 let lastProgressBarSelected;
 let nbCharacteristicsHidden = 0;
+
 $('#hidden-characteristics-menu').hide();
 
 /**
@@ -24,49 +22,6 @@ function format(text) {
 
 (function () {
     $('[data-toggle="tooltip"]').tooltip();
-})();
-
-/**
- * Crée le tableau des caractéristiques canoniques.
- */
-(function () {
-    for (allowedCharacteristic of allowedCharacteristics) {
-        canonicalAllowedCharacteristics.push(format(allowedCharacteristic));
-    }
-})();
-
-/**
- * Définit les entêtes du tableau
- */
-(function () {
-    let headers = `<tr class="header"><th class="user">Utilisateur</th><th class="character">Personnage</th>`;
-    for (allowedCharacteristic of allowedCharacteristics) {
-        headers += `<th class="${format(allowedCharacteristic)}">${allowedCharacteristic} <span class="glyphicon glyphicon-eye-close pull-right"></span></th>`;
-    }
-    headers += `</tr>`;
-    $('table thead').append(headers);
-})();
-
-/**
- * Remplit le tableau
- */
-(function () {
-    console.log(players);
-    for (player of players) {
-        let row = `<tr class="player-${player.id}">`;
-        if (player.playerName === "N/A") {
-            row += `<th class="user">${player.username}</th><th style="text-align:center;" colspan="${allowedCharacteristics.length + 1}">Ce joueur n'a pas encore créé son personnage</th>`;
-        } else {
-            row += `<th class="user">${player.username}</th><th style="display: flex; justify-content: space-between;" class="character">${player.playerName}<span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span></th>`;
-            for (canonicalAllowedCharacteristic of canonicalAllowedCharacteristics) {
-                row += `<th class="${canonicalAllowedCharacteristic}"><input class="form-control" type="number" value="${player.characteristics[canonicalAllowedCharacteristic]}"></th>`;
-            }
-        }
-
-        row += `</tr>`;
-        $('table tbody').append(row);
-    }
-
 })();
 
 /**
@@ -125,83 +80,22 @@ function format(text) {
     });
 })();
 
-function createProgressBar(width, text="", classStyle=null) {
-    let availableStyles =['progress-bar-success', 'progress-bar-info', 'progress-bar-warning', 'progress-bar-danger'];
-    if (classStyle === null){
-        classStyle = availableStyles[Math.floor(Math.random()*availableStyles.length)];
-    }
-    return `<div class="progress">
-                 <div class="progress-bar ${classStyle} progress-bar-striped active" role="progressbar" style="width:${width}%">${text}</div>
-            </div>`;
-}
-
 /**
  * Affiche ou masque la fiche personnage
  */
 (function () {
     $(document).on('click', '.glyphicon-menu-down', function () {
-        $(this).toggleClass('glyphicon-menu-down glyphicon-menu-up');
         let playerId = $(this).closest('tr').attr('class').split('-')[1];
-        let closestTr = $(this).closest('tr');
-        $.get(
-            ajaxPath,
-            {
-                action: "get-data-character",
-                "playerId": playerId
-            },
-            function (data) {
-                let tokenPath = data.tokenPath;
-                let characteristics = data.characteristics;
-
-                let strToDisplay = '';
-
-                for (let characteristic in characteristics){
-                    strToDisplay += `
-                        <div class="form-group">
-                            <label class="col-xs-2 col-lg-1 control-label">${characteristic}</label>`;
-
-                    if (characteristics[characteristic].max !== undefined){
-                        let width = characteristics[characteristic].value / characteristics[characteristic].max *100;
-                        strToDisplay += `<div class="col-xs-6 col-lg-4" style="margin-top:7px">
-                                        ${createProgressBar(width, characteristics[characteristic].value + '/' +characteristics[characteristic].max)}
-                                        </div>`;
-                    } else {
-                        strToDisplay = strToDisplay += `<div class="col-xs-6 col-lg-4" style="margin-top: 7px;">${characteristics[characteristic].value}</div>`;
-                    }
-                    strToDisplay += `</div>`;
-                }
-
-                closestTr.after(`
-                <tr id="${'player-data-' + playerId}">
-                    <th colspan="${allowedCharacteristics.length + 2}">
-                        <div class="container">
-                            <fieldset>
-                                <legend>Caractéristiques</legend>
-                                <div class="panel panel-default">
-                                    <div class="panel-body">
-                                        <p>Content</p>
-                                    </div>
-                                </div>
-                            </fieldset>
-                            <form class="form-horizontal">
-                            </form>
-                            
-                        </div>                        
-                    </th>
-                </tr>
-                `);
-            },
-            'json'
-        );
-
+        $(this).toggleClass('glyphicon-menu-down glyphicon-menu-up');
+        $("#player-data-" + playerId).show();
     });
+
     $(document).on('click', '.glyphicon-menu-up', function () {
         let playerId = $(this).closest('tr').attr('class').split('-')[1];
         $(this).toggleClass('glyphicon-menu-up glyphicon-menu-down');
-        $("#player-data-" + playerId).remove();
+        $("#player-data-" + playerId).hide();
     });
 })();
-
 
 /**
  * Affichage clique droit différent sur les barres de progressions

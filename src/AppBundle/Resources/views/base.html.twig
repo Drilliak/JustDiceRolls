@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/AppBundle/base.css') }}">
     {% endblock %}
+    {% block javascriptHead %}{% endblock %}
 </head>
 <body>
 {% for type, flashes in app.session.flashbag.all %}

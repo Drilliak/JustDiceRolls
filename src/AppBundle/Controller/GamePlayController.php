@@ -76,22 +76,22 @@ class GamePlayController extends Controller
                 $playerData['characteristics'] = $characteristics;
             }
             $playerData['id'] = $player->getId();
+            $playerData['character'] = $player->getCharacter();
 
             $players[] = $playerData;
         }
 
         $this->get('acme.js_vars')->charData = [
-            "allowedCharacteristics" => $allowedCharacteristics,
-            "players"                => $players,
-            "ajaxPath"               => $this->generateUrl("game_play_mj_ajax"),
-            "gameId"                 => $game->getId(),
+            "ajaxPath" => $this->generateUrl("game_play_mj_ajax"),
+            "gameId"   => $game->getId(),
         ];
 
 
-
         return $this->render("AppBundle:GamePlay:play_as_mj.html.twig", [
-                "gameName" => $game->getName(),
-                "gameId"   => $game->getId(),
+                "players"                => $players,
+                "allowedCharacteristics" => $allowedCharacteristics,
+                "gameName"               => $game->getName(),
+                "gameId"                 => $game->getId(),
             ]
         );
     }
@@ -160,7 +160,22 @@ class GamePlayController extends Controller
         $imagineCacheManager = $this->get('liip_imagine.cache.manager');
         $path = $imagineCacheManager->getBrowserPath('img/tokens/' . $player->getCharacter()->getToken(), "thumb_token_filter");
 
-        $res = ["tokenPath" => $path, "characteristics" => ['PV' => ['value' => 5, 'max' =>10], 'Mana' => ['value' => 7]]];
+        $characteristics = [];
+        /** @var Characteristic $characteristic */
+        foreach ($character->getCharacteristics() as $characteristic) {
+            $values = [];
+            if ($characteristic->getHasMax()) {
+                $values['value'] = $characteristic->getValue();
+                $values['max'] = $characteristic->getMaxValue();
+            } else {
+                $values['value'] = $characteristic->getValue();
+            }
+            $characteristics[$characteristic->getName()] = $values;
+        }
+        $res = [
+            "tokenPath"       => $path,
+            "characteristics" => $characteristics
+        ];
         return new JsonResponse($res);
     }
 
