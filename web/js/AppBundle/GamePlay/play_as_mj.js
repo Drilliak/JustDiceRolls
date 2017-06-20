@@ -2,12 +2,22 @@ let jsVars = jQuery('#js-vars').data('vars').charData;
 
 let players = jsVars.players;
 let ajaxPath = jsVars.ajaxPath;
-
+let idPlayers = jsVars.idPlayers;
+let allowedCharacteristics = jsVars.allowedCharacteristics;
 
 let lastProgressBarSelected;
 let nbCharacteristicsHidden = 0;
 
 $('#hidden-characteristics-menu').hide();
+
+console.log(idPlayers);
+console.log(allowedCharacteristics);
+
+let canonicalCharacteristics = []
+
+for (allowedCharacteristic of allowedCharacteristics){
+    canonicalCharacteristics[] =
+}
 
 /**
  * Formate une chaine de caractères en supprimant tous les espaces et en passant
@@ -22,6 +32,17 @@ function format(text) {
 
 (function () {
     $('[data-toggle="tooltip"]').tooltip();
+})();
+
+/**
+ * Chargement des paramètres d'affichage
+ */
+(function(){
+    if (localStorageSupported){
+        localStorage.get()
+    } else {
+        throw "Locale Storage not supported";
+    }
 })();
 
 /**
@@ -129,6 +150,9 @@ function format(text) {
     $(document).on('click', '#context-menu .progress-bar', function () {
         let newClass = $(this).attr('class');
         lastProgressBarSelected.removeClass().addClass(newClass);
+        let characteristicName = lastProgressBarSelected.parent().attr('class');
+        let idPlayer = lastProgressBarSelected.closest('tr').attr('id').split('-')[2];
+        console.log(idPlayer);
     });
 
 })();

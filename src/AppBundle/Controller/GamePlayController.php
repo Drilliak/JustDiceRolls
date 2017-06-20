@@ -51,6 +51,7 @@ class GamePlayController extends Controller
         }
 
         $players = [];
+        $idPlayers = [];
 
         $formatter = $this->get('app.name_formatter');
         /** @var Player $player */
@@ -76,14 +77,17 @@ class GamePlayController extends Controller
                 $playerData['characteristics'] = $characteristics;
             }
             $playerData['id'] = $player->getId();
+            $idPlayers[] = $player->getId();
             $playerData['character'] = $player->getCharacter();
 
             $players[] = $playerData;
         }
 
         $this->get('acme.js_vars')->charData = [
-            "ajaxPath" => $this->generateUrl("game_play_mj_ajax"),
-            "gameId"   => $game->getId(),
+            "ajaxPath"  => $this->generateUrl("game_play_mj_ajax"),
+            "gameId"    => $game->getId(),
+            "idPlayers" => $idPlayers,
+            "allowedCharacteristics" => $allowedCharacteristics,
         ];
 
 

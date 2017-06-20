@@ -19,7 +19,6 @@ une cohérence dans l'affichage #}
 {% block javascriptHead %}
     <script>
         let localStorageSupported = typeof(Storage) !== "undefined";
-        localStorage.removeItem('nom');
     </script>
 {% endblock %}
 
@@ -87,17 +86,24 @@ une cohérence dans l'affichage #}
                                                     <div class="panel-body" style="padding-top: 0;">
                                                         <label class="col-xs-2 col-lg-1 control-label">{{ characteristic.name }}</label>
                                                         {% if characteristic.hasMax %}
-                                                            {% set width = characteristic.value / characteristic.maxValue *100 %}
+                                                            {% if characteristic.maxValue != 0 %}
+                                                                {% set width = characteristic.value / characteristic.maxValue *100 %}
+                                                            {% else %}
+                                                                {% set width = 100 %}
+                                                            {% endif %}
                                                             <div class="col-xs-10 col-lg-11" style="margin-top:7px;">
                                                                 <div class="progress">
-                                                                    <div class="progress-bar progress-bar-success progress-bar-striped active"
-                                                                         role="progressbar"
-                                                                         style="width:{{ width ~"%;" }}">{{ characteristic.value ~ '/' ~ characteristic.maxValue }}
+                                                                    <div class="{{ characteristic.name }}">
+                                                                        <div class="progress-bar progress-bar-success progress-bar-striped active"
+                                                                             role="progressbar"
+                                                                             style="width:{{ width ~"%;" }}">{{ characteristic.value ~ '/' ~ characteristic.maxValue }}
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         {% else %}
-                                                            <div class="col-xs-10 col-lg-11 text-center" style="margin-top:7px;">
+                                                            <div class="col-xs-10 col-lg-11 text-center"
+                                                                 style="margin-top:7px;">
                                                                 <span>{{ characteristic.value }}</span>
                                                             </div>
                                                         {% endif %}
@@ -148,7 +154,7 @@ une cohérence dans l'affichage #}
     <script src="{{ asset('js/AppBundle/GamePlay/play_as_mj.js') }}"></script>
     <script>
         $('.characteristic').draggable({
-            containment : '.characteristic-panel'
+            containment: '.characteristic-panel'
         });
     </script>
 
