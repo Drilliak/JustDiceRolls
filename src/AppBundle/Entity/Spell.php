@@ -39,7 +39,7 @@ class Spell
 
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PlayerCharacter")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PlayerCharacter", inversedBy="spells")
      * @ORM\JoinColumn(nullable=true)
      */
     private $playerCharacter;

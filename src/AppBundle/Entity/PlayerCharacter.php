@@ -211,7 +211,7 @@ class PlayerCharacter
     public function addSpell(\AppBundle\Entity\Spell $spell)
     {
         $this->spells[] = $spell;
-
+        $spell->setPlayerCharacter($this);
         return $this;
     }
 
