@@ -1,6 +1,7 @@
 <?php
 
 namespace AppBundle\Repository;
+use AppBundle\Entity\Player;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
 
@@ -38,6 +39,8 @@ class PlayerRepository extends \Doctrine\ORM\EntityRepository
     /**
      * @param $idGame
      * @param $idUser
+     *
+     * @return null|Player
      */
     public function findPlayer($idGame, $idUser) {
         $query = $this->getEntityManager()

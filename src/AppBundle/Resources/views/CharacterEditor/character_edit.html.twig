@@ -1,12 +1,39 @@
 {% extends "AppBundle::base.html.twig" %}
 
-{% block title %} {% endblock %}
+{% block title %} Édition personnage - {{ gameName }}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
 {% endblock %}
 
 {% block content %}
+    <div class="container">
+        <div class="row">
+            <fieldset class="col-sm-6">
+                <legend>Informations générales</legend>
+                <div class="panel panel-default">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <div class="panel-body"><label class="control-label col-xs-3 col-sm-2">Nom</label>
+                                <div class="col-xs-9 col-sm-10">
+                                    <input type="text" class="form-control" value="{{ character.name }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="panel-body"><label class="control-label col-xs-3 col-sm-2">Histoire</label>
+                                <div class="col-xs-9 col-sm-10">
+                                    <textarea class="form-control">{{ character.backstory }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+    {{ character.name }}
+    {{ character.backstory }}
 {% endblock %}
 
 {% block javascripts %}

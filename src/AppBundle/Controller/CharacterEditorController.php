@@ -13,8 +13,26 @@ use Symfony\Component\HttpFoundation\Request;
 
 class CharacterEditorController extends Controller
 {
-    public function editCharacterAction(Request $request, $idGame){
+    public function editCharacterAction(Request $request, $idGame)
+    {
 
-        return $this->render("AppBundle:CharacterEditor:character_edit.html.twig");
+        $em = $this->getDoctrine()->getManager();
+        $playerRepository = $em->getRepository('AppBundle:Player');
+        $idUser = $this->get('security.token_storage')->getToken()->getUser()->getId();
+        $player = $playerRepository->findPlayer($idGame, $idUser);
+        if ($player === null) {
+            $this->addFlash('danger', "Vous n'avez pas été invité à participer à cette partie.");
+            return $this->redirectToRoute('homepage');
+        }
+
+        $gameRepository = $em->getRepository('AppBundle:Game');
+        $game = $gameRepository->find($idGame);
+
+        return $this->render("AppBundle:CharacterEditor:character_edit.html.twig", [
+                'gameName'  => $game->getName(),
+                'character' => $player->getCharacter(),
+
+            ]
+        );
     }
 }
