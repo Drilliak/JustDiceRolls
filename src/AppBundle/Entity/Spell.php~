@@ -1,0 +1,48 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: vincent
+ * Date: 20/06/17
+ * Time: 19:59
+ */
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Table(name="spells")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\SpellRepository")
+ */
+class Spell
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     * @ORM\Column(name="name", type="string", length=255)
+     */
+    private $name;
+
+    /**
+     * @var string
+     * @ORM\Column(name="descritpion", type="text", nullable=false)
+     */
+    private $description;
+
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PlayerCharacter")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $playerCharacter;
+
+
+}

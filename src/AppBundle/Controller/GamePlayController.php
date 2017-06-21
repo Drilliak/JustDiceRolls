@@ -90,7 +90,6 @@ class GamePlayController extends Controller
             "allowedCharacteristics" => $allowedCharacteristics,
         ];
 
-
         return $this->render("AppBundle:GamePlay:play_as_mj.html.twig", [
                 "players"                => $players,
                 "allowedCharacteristics" => $allowedCharacteristics,

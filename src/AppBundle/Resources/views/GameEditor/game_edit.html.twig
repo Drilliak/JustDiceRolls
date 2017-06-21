@@ -4,22 +4,26 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    
+
     <link rel="stylesheet" href="{{ asset('css/jquery-ui.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/AppBundle/Game/game_edit.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/AppBundle/GameEditor/game_edit.css') }}">
 
 {% endblock %}
 
 {% block content %}
     <div class="container">
         <div class="row">
+            <a class="pull-right btn btn-default" data-toggle="tooltip"
+               title="Jouer" href="{{ path('game_play_as_mj', {'idGame': idGame}) }}">
+                <span class="glyphicon glyphicon-play"></span>
+            </a>
             <div class="page-header">
                 <h2 id="game-name">{{ gameName }}</h2>
             </div>
         </div>
         <fieldset>
             <legend>Caractéristiques autoriséees</legend>
-            
+
             <div class="row">
                 <div class="col-sm-6">
                     <table class="table table-striped">
@@ -49,8 +53,8 @@
                     </table>
                 </div>
             </div>
-            
-            
+
+
             <form class="row" method="get" action="javascript:void(0)">
                 <div class="form-group col-xs-6 col-sm-3 col-lg-2 ">
                     <input type="text" class="form-control" id="new-characteristic"
@@ -60,19 +64,19 @@
                 </button>
             </form>
         </fieldset>
-        
+
         <fieldset>
             <legend>Participants</legend>
             <div class="row">
                 <div class="col-sm-6">
-                
+
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-6">
                     <div class="panel panel-default">
                         <div class="panel-heading clearfix row" style="margin: 0;">
-                            
+
                             <div class="input-group col-xs-offset-7">
                                 <input type="text" class="form-control" id="new-player"
                                        placeholder="Ajouter un utilisateur">
@@ -100,10 +104,10 @@
                     </table>
                 </div>
             </div>
-        
+
         </fieldset>
-    
-    
+
+
     </div>
 {% endblock %}
 
@@ -113,5 +117,5 @@
 {% block javascripts %}
     {{ parent() }}
     <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
-    <script src="{{ asset('js/AppBundle/Game/game_edit.js') }}"></script>
+    <script src="{{ asset('js/AppBundle/GameEditor/game_edit.js') }}"></script>
 {% endblock %}

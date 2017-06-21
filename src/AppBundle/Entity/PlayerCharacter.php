@@ -57,10 +57,16 @@ class PlayerCharacter
      */
     private $token;
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Spell", mappedBy="playerCharacter")
+     */
+    private $spells;
+
 
     public function __construct()
     {
         $this->characteristics = new ArrayCollection();
+        $this->spells = new ArrayCollection();
     }
 
     /**
@@ -193,5 +199,39 @@ class PlayerCharacter
     public function removeCharacteristic(\AppBundle\Entity\Characteristic $characteristic)
     {
         $this->characteristics->removeElement($characteristic);
+    }
+
+    /**
+     * Add spell
+     *
+     * @param \AppBundle\Entity\Spell $spell
+     *
+     * @return PlayerCharacter
+     */
+    public function addSpell(\AppBundle\Entity\Spell $spell)
+    {
+        $this->spells[] = $spell;
+
+        return $this;
+    }
+
+    /**
+     * Remove spell
+     *
+     * @param \AppBundle\Entity\Spell $spell
+     */
+    public function removeSpell(\AppBundle\Entity\Spell $spell)
+    {
+        $this->spells->removeElement($spell);
+    }
+
+    /**
+     * Get spells
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSpells()
+    {
+        return $this->spells;
     }
 }

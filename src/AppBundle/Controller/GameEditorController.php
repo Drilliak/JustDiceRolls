@@ -2,8 +2,10 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\AppBundle;
 use AppBundle\Entity\Characteristic;
 use AppBundle\Entity\Player;
+use AppBundle\Entity\PlayerCharacter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -90,13 +92,26 @@ class GameEditorController extends Controller
 
     private function addCharacteristic($idGame, $newCharacteristicName)
     {
-        $gameRepository = $this->getDoctrine()->getManager()->getRepository('AppBundle:Game');
+        $em = $this->getDoctrine()->getManager();
+        $gameRepository = $em->getRepository('AppBundle:Game');
+        $playerRepository = $em->getRepository('AppBundle:Player');
         $game = $gameRepository->find($idGame);
 
-        $em = $this->getDoctrine()->getManager();
+
 
         $characteristic = new Characteristic($newCharacteristicName);
         $game->addAllowedCharacteristic($characteristic);
+
+        $players = $playerRepository->findPlayers($idGame);
+        /** @var Player $player */
+        foreach ($players as $player){
+            $character = $player->getCharacter();
+            $characteristic->setHasMax(false);
+            $characteristic->setValue(0);
+            $character->addCharacteristic($characteristic);
+            $player->setCharacter($character);
+        }
+
         $em->flush();
 
         return new JsonResponse('success');
@@ -132,6 +147,7 @@ class GameEditorController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $gameRepository = $em->getRepository('AppBundle:Game');
+        $playerRepository = $em->getRepository('AppBundle:Player');
         $game = $gameRepository->find($idGame);
 
         $characteristics = $game->getAllowedCharacteristics();
@@ -143,6 +159,8 @@ class GameEditorController extends Controller
                 return new JsonResponse("changed");
             }
         }
+        $players = $playerRepository->findPlayers($idGame);
+        
 
         return new JsonResponse("success");
     }

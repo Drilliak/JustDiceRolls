@@ -48,10 +48,15 @@ class Game
 
     /**
      * @var string
-     * @ORM\Column(name="description", type="text")
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\Column(name="description", type="text", nullable=true)
      */
     private $description;
+
+    /**
+     * @var int
+     * @ORM\Column(type="integer")
+     */
+    private $nbMaxSpells;
 
     /**
      * Constructor

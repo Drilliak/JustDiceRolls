@@ -77,63 +77,71 @@ une cohérence dans l'affichage #}
                     <th colspan="{{ allowedCharacteristics|length +2 }}">
                         <div class="container">
                             <fieldset class="col-sm-6">
-                                <legend>Caractéristiques</legend>
-                                <div class="panel panel-default characteristic-panel">
-                                    <form class="form-horizontal">
-                                        {% if player.character %}
-                                            {% for characteristic in player.character.characteristics %}
-                                                <div class="form-group characteristic" style="margin-bottom: 0; ">
-                                                    <div class="panel-body" style="padding-top: 0;">
-                                                        <label class="col-xs-2 col-lg-1 control-label">{{ characteristic.name }}</label>
-                                                        {% if characteristic.hasMax %}
-                                                            {% if characteristic.maxValue != 0 %}
-                                                                {% set width = characteristic.value / characteristic.maxValue *100 %}
-                                                            {% else %}
-                                                                {% set width = 100 %}
-                                                            {% endif %}
-                                                            <div class="col-xs-10 col-lg-11" style="margin-top:7px;">
-                                                                <div class="progress">
-                                                                    <div class="{{ characteristic.name }}">
-                                                                        <div class="progress-bar progress-bar-success progress-bar-striped active"
-                                                                             role="progressbar"
-                                                                             style="width:{{ width ~"%;" }}">{{ characteristic.value ~ '/' ~ characteristic.maxValue }}
+                                <div class="section">
+                                    <legend>Caractéristiques</legend>
+                                    <div class="panel panel-default characteristic-panel">
+                                        <form class="form-horizontal">
+                                            {% if player.character %}
+                                                {% for characteristic in player.character.characteristics %}
+                                                    <div class="form-group characteristic" style="margin-bottom: 0; ">
+                                                        <div class="panel-body">
+                                                            <label class="col-xs-2 col-lg-1 control-label">{{ characteristic.name }}</label>
+                                                            {% if characteristic.hasMax %}
+                                                                {% if characteristic.maxValue != 0 %}
+                                                                    {% set width = characteristic.value / characteristic.maxValue *100 %}
+                                                                {% else %}
+                                                                    {% set width = 100 %}
+                                                                {% endif %}
+                                                                <div class="col-xs-10 col-lg-11"
+                                                                     style="margin-top:7px;">
+                                                                    <div class="{{ formatName(characteristic.name) }}">
+                                                                        <div class="progress">
+                                                                            <div class="progress-bar progress-bar-success progress-bar-striped active"
+                                                                                 role="progressbar"
+                                                                                 style="width:{{ width ~"%;" }}">
+                                                                                <span>{{ characteristic.value ~ '/' ~ characteristic.maxValue }}</span>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        {% else %}
-                                                            <div class="col-xs-10 col-lg-11 text-center"
-                                                                 style="margin-top:7px;">
-                                                                <span>{{ characteristic.value }}</span>
-                                                            </div>
-                                                        {% endif %}
+                                                            {% else %}
+                                                                <div class="col-xs-10 col-lg-11 text-center"
+                                                                     style="margin-top:7px;">
+                                                                    <div class="{{ formatName(characteristic.name) }}">
+                                                                        <span>{{ characteristic.value }}</span>
+                                                                    </div>
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            {% else %}
+                                                <div class="form-group">
+                                                    <div class="panel-body">
+                                                        <p>Aucune donnée</p>
                                                     </div>
                                                 </div>
-                                            {% endfor %}
-                                        {% else %}
-                                            <div class="form-group">
-                                                <div class="panel-body">
-                                                    <p>Aucune donnée</p>
-                                                </div>
-                                            </div>
-                                        {% endif %}
+                                            {% endif %}
 
-                                    </form>
+                                        </form>
+                                    </div>
                                 </div>
 
-                                <legend>Compétences</legend>
-                                <div class="panel panel-default">
-                                    <form class="form-horizontal">
-                                        <div class="form-group">
-                                            <div class="panel-body">
-                                                <label class="control-label col-sm-2" for="email">Email:</label>
-                                                <div class="col-sm-10">
-                                                    <input type="email" class="form-control" id="email"
-                                                           placeholder="Enter email">
+                                <div class="section">
+                                    <legend>Compétences</legend>
+                                    <div class="panel panel-default">
+                                        <form class="form-horizontal">
+                                            <div class="form-group">
+                                                <div class="panel-body">
+                                                    <label class="control-label col-sm-2" for="email">Email:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="email" class="form-control" id="email"
+                                                               placeholder="Enter email">
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </form>
+                                        </form>
+                                    </div>
                                 </div>
                             </fieldset>
                         </div>

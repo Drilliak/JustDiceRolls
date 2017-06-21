@@ -10,14 +10,13 @@ let nbCharacteristicsHidden = 0;
 
 $('#hidden-characteristics-menu').hide();
 
-console.log(idPlayers);
-console.log(allowedCharacteristics);
 
 let canonicalCharacteristics = []
 
 for (allowedCharacteristic of allowedCharacteristics){
-    canonicalCharacteristics[] =
+    canonicalCharacteristics.push(allowedCharacteristic.trim().toLowerCase().replace(/\s/, ''));
 }
+console.log(canonicalCharacteristics)
 
 /**
  * Formate une chaine de caractères en supprimant tous les espaces et en passant
@@ -39,7 +38,6 @@ function format(text) {
  */
 (function(){
     if (localStorageSupported){
-        localStorage.get()
     } else {
         throw "Locale Storage not supported";
     }
@@ -49,7 +47,7 @@ function format(text) {
  * Changement d'une valeur dans le tableau
  */
 (function () {
-    $('input').on('paste keyup', function () {
+    $('input').on('paste keyup mouseup', function () {
         let characteristic = $(this).closest("th").attr('class');
         let playerId = $(this).closest("tr").attr('class').split("-")[1];
         let newValue = $(this).val().trim();
@@ -66,6 +64,30 @@ function format(text) {
             },
             'json'
         );
+
+        if (characteristic.includes('max')){
+            characteristic = characteristic.substr(0,characteristic.length-3);
+        }
+
+        if ($('#player-data-' + playerId + ' .characteristic .' + characteristic).find('.progress').length !==0){
+
+            let value = $(`.player-${playerId} .${characteristic} input`).val();
+            let maxValue = $(`.player-${playerId} .${characteristic + 'max'} input`).val();
+            let width;
+            if (maxValue === 0){
+                width = "100%";
+            } else {
+                width = value/maxValue*100 + "%";
+            }
+            console.log(width);
+            let progressBar = $('#player-data-' + playerId + ' .characteristic .' + characteristic)
+                .find('.progress').find('.progress-bar');
+            progressBar.css({ "width": width });
+            progressBar.html(`<span>${value}/${maxValue}</span>`);
+
+        } else {
+            $('#player-data-' + playerId + ' .characteristic .' + characteristic).find('span').html(newValue);
+        }
     });
 })();
 
@@ -80,7 +102,7 @@ function format(text) {
         nbCharacteristicsHidden++;
         let characteristicName = $(this).parent().attr('class');
         let nameShowed = $(this).parent().text();
-        $('.' + characteristicName).hide();
+        $('.' + characteristicName).not('form .' + characteristicName).hide();
         $('#hidden-characteristics').append(`
             <li id="${characteristicName}"><a class="hidden-characteristic" href="javascript:void(0)">${nameShowed}</a></li>
         `);
@@ -152,7 +174,7 @@ function format(text) {
         lastProgressBarSelected.removeClass().addClass(newClass);
         let characteristicName = lastProgressBarSelected.parent().attr('class');
         let idPlayer = lastProgressBarSelected.closest('tr').attr('id').split('-')[2];
-        console.log(idPlayer);
+
     });
 
 })();
