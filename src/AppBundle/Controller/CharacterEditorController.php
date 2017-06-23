@@ -10,6 +10,8 @@ namespace AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use AppBundle\Entity\Spell;
 
 class CharacterEditorController extends Controller
 {
@@ -28,11 +30,57 @@ class CharacterEditorController extends Controller
         $gameRepository = $em->getRepository('AppBundle:Game');
         $game = $gameRepository->find($idGame);
 
+        $this->get('acme.js_vars')->charData = [
+            "ajaxPath" => $this->generateUrl('edit_character_ajax'),
+            "idUser"   => $this->get('security.token_storage')->getToken()->getUser()->getId(),
+            "idPlayerCharacter"   => $player->getCharacter()->getId(),
+        ];
+
         return $this->render("AppBundle:CharacterEditor:character_edit.html.twig", [
                 'gameName'  => $game->getName(),
                 'character' => $player->getCharacter(),
 
             ]
         );
+    }
+
+    public function editCharacterAjaxAction(Request $request)
+    {
+        // if ($request->isXmlHttpRequest()) {
+        $idPlyaer = $request->get('idUser');
+
+        if ($this->get('security.token_storage')->getToken()->getUser()->getId() != $idPlyaer) {
+            return new JsonResponse('Invalid user');
+        }
+        $action = $request->get('action');
+
+        switch ($action) {
+            case "add-new-spell":
+                $idPlayerCharacter = $request->get('idPlayerCharacter');
+                $name = $request->get('spellName');
+                $description = $request->get('spellDescription');
+                return $this->addNewSpell($idPlayerCharacter, $name, $description);
+        }
+
+        return new JsonResponse('failed');
+        // }
+
+    }
+
+    public function addNewSpell($idPlayerCharacter, $name, $description)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $playerCharacterRepository = $em->getRepository('AppBundle:PlayerCharacter');
+
+        $character = $playerCharacterRepository->find($idPlayerCharacter);
+        $spell = new Spell();
+
+        $spell->setName($name);
+        $spell->setDescription($description);
+        if ($character->addSpell($spell)){
+            $em->persist($spell);
+        }
+        $em->flush();
+        return new JsonResponse([$name, $description]);
     }
 }

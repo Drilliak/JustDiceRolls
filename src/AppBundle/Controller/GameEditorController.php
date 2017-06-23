@@ -2,17 +2,15 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\AppBundle;
+
 use AppBundle\Entity\Characteristic;
 use AppBundle\Entity\Player;
-use AppBundle\Entity\PlayerCharacter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use UserBundle\Entity\User;
-use UserBundle\UserBundle;
+
 
 class GameEditorController extends Controller
 {
@@ -49,6 +47,7 @@ class GameEditorController extends Controller
                 "gameName"        => $game->getName(),
                 "characteristics" => $game->getAllowedCharacteristics(),
                 "idGame"          => $idGame,
+                "nbSpellsMax"     => $game->getNbSpellsMax(),
                 "players"         => $game->getPlayers()->toArray()
             ]
         );
@@ -66,7 +65,7 @@ class GameEditorController extends Controller
         $gameMasterId = $this->getDoctrine()->getManager()->getRepository('AppBundle:Game')->find($idGame)->getGameMaster()->getId();
 
         if ($currentUserId != $gameMasterId) {
-            return new Response('Invalid user');
+            return new JsonResponse('Invalid user');
         }
 
         $action = $request->get('action');
@@ -84,6 +83,9 @@ class GameEditorController extends Controller
             case "remove-player":
                 $playerName = $request->get('playerName');
                 return $this->removePlayer($idGame, $playerName);
+            case "change-nb-spells-max":
+                $value = $request->get('value');
+                return $this->changeNbSpellsMax($idGame, $value);
         }
         //  }
 
@@ -98,13 +100,12 @@ class GameEditorController extends Controller
         $game = $gameRepository->find($idGame);
 
 
-
         $characteristic = new Characteristic($newCharacteristicName);
         $game->addAllowedCharacteristic($characteristic);
 
         $players = $playerRepository->findPlayers($idGame);
         /** @var Player $player */
-        foreach ($players as $player){
+        foreach ($players as $player) {
             $character = $player->getCharacter();
             $characteristic->setHasMax(false);
             $characteristic->setValue(0);
@@ -160,7 +161,7 @@ class GameEditorController extends Controller
             }
         }
         $players = $playerRepository->findPlayers($idGame);
-        
+
 
         return new JsonResponse("success");
     }
@@ -183,7 +184,8 @@ class GameEditorController extends Controller
         return new JsonResponse("player added");
     }
 
-    private function removePlayer($idGame, $playerName){
+    private function removePlayer($idGame, $playerName)
+    {
         $em = $this->getDoctrine()->getManager();
 
         $gameRepository = $em->getRepository('AppBundle:Game');
@@ -196,6 +198,17 @@ class GameEditorController extends Controller
         $em->flush();
 
         return new JsonResponse('player removed');
+    }
+
+    private function changeNbSpellsMax($idGame, $value){
+        $value = (int) trim($value);
+        $em = $this->getDoctrine()->getManager();
+        $gameRepository = $em->getRepository('AppBundle:Game');
+        $game = $gameRepository->find($idGame);
+        $game->setNbSpellsMax($value);
+        $em->flush();
+
+        return new JsonResponse("Number of spells sucessfully changed.");
     }
 
     public function autocompleteAction(Request $request)

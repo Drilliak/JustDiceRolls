@@ -53,6 +53,12 @@ class Game
     private $description;
 
     /**
+     * @var int
+     * @ORM\Column(name="nb_spells_max", type="integer", options={"default":1})
+     */
+    private $nbSpellsMax;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -206,4 +212,36 @@ class Game
     }
 
 
+
+    /**
+     * Set nbSpellsMax
+     *
+     * @param integer $nbSpellsMax
+     *
+     * @return Game
+     */
+    public function setNbSpellsMax($nbSpellsMax)
+    {
+        $this->nbSpellsMax = $nbSpellsMax;
+
+        /** @var Player $player */
+        foreach ($this->players as $player){
+            $character = $player->getCharacter();
+            if ($character != null){
+                $character->setNbSpellsMax($nbSpellsMax);
+                $player->setCharacter($character);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * Get nbSpellsMax
+     *
+     * @return integer
+     */
+    public function getNbSpellsMax()
+    {
+        return $this->nbSpellsMax;
+    }
 }

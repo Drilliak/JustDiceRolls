@@ -9,33 +9,53 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <fieldset class="col-sm-6">
+            <fieldset class="col-md-6">
                 <legend>Informations générales</legend>
                 <div class="panel panel-default">
                     <form class="form-horizontal">
                         <div class="form-group">
-                            <div class="panel-body"><label class="control-label col-xs-3 col-sm-2">Nom</label>
+                            <div class="panel-body">
+                                <label for="character-name" class="control-label col-xs-3 col-sm-2">Nom</label>
                                 <div class="col-xs-9 col-sm-10">
-                                    <input type="text" class="form-control" value="{{ character.name }}">
+                                    <input name=character-name" id="character-name" type="text" class="form-control" value="{{ character.name }}">
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="panel-body"><label class="control-label col-xs-3 col-sm-2">Histoire</label>
+                            <div class="panel-body">
+                                <label for="character-backstory" class="control-label col-xs-3 col-sm-2">Histoire</label>
                                 <div class="col-xs-9 col-sm-10">
-                                    <textarea class="form-control">{{ character.backstory }}</textarea>
+                                    <textarea id="character-backstory" rows="5" class="form-control">{{ character.backstory }}</textarea>
                                 </div>
                             </div>
                         </div>
                     </form>
                 </div>
             </fieldset>
+            <fieldset class="col-md-6">
+                <legend>Sorts</legend>
+                <div class="panel panel-default">
+                    <form class="form-horizontal">
+                        {% for spell in character.spells %}
+                            {{ spell.name }}
+                            {{ spell.description }}
+                        {% endfor %}
+                        <div class="form-group">
+                            <div class="panel-body">
+                            </div>
+                        </div>
+                    </form>
+                    <div class="panel-body" id="create-new-spell-body">
+                        <button class="btn btn-default" id="create-new-spell-button">Ajouter un sort</button>
+                    </div>
+
+                </div>
+            </fieldset>
         </div>
     </div>
-    {{ character.name }}
-    {{ character.backstory }}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="{{ asset('js/AppBundle/CharacterEditor/character_edit.js') }}"></script>
 {% endblock %}

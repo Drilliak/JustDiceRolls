@@ -33,7 +33,7 @@ class Spell
 
     /**
      * @var string
-     * @ORM\Column(name="descritpion", type="text", nullable=false)
+     * @ORM\Column(name="description", type="text", nullable=false)
      */
     private $description;
 

@@ -69,11 +69,6 @@
             <legend>Participants</legend>
             <div class="row">
                 <div class="col-sm-6">
-
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
                     <div class="panel panel-default">
                         <div class="panel-heading clearfix row" style="margin: 0;">
 
@@ -107,6 +102,32 @@
 
         </fieldset>
 
+        <fieldset>
+            <legend>Paramètres généraux</legend>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="panel panel-default">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <div class="panel-body">
+                                    <div class="col-xs-7">
+                                        <label for="nb-spells-max" data-toggle="tooltip"
+                                               title="Vous pouvez redéfinir ce nombre en fonction de chaque joueur dans la menu de la partie">
+                                            Nombre de sorts par personnage
+                                        </label>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <input class="form-control" id="nb-spells-max" type="number"
+                                               value="{{ nbSpellsMax }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
 
     </div>
 {% endblock %}
@@ -118,4 +139,5 @@
     {{ parent() }}
     <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
     <script src="{{ asset('js/AppBundle/GameEditor/game_edit.js') }}"></script>
+    <script>$('[data-toogle="tooltip"]').tooltip();</script>
 {% endblock %}

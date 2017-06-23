@@ -154,3 +154,21 @@ let autocompletePath = jsVars.autocompletePath;
         )
     });
 })();
+
+/**
+ * Modification de la valeur du nombre de sorts par personnage
+ */
+(function(){
+    $(document).on('input','#nb-spells-max', function(){
+        $.post(
+            ajaxPath,
+            {
+                action: "change-nb-spells-max",
+                value: $(this).val(),
+                "idGame": idGame
+            },
+            function(data){},
+            'json'
+        );
+    });
+})();

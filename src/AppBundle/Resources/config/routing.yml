@@ -69,3 +69,9 @@ edit_character:
     defaults:
         _controller: AppBundle:CharacterEditor:editCharacter
     methods: [GET]
+
+edit_character_ajax:
+    path: ajax/edit-character
+    defaults:
+        _controller: AppBundle:CharacterEditor:editCharacterAjax
+    methods: [GET, POST]

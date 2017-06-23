@@ -58,6 +58,12 @@ class PlayerCharacter
     private $token;
 
     /**
+     * @var int
+     * @ORM\Column(name="nb_spells_max", type="integer")
+     */
+    private $nbSpellsMax;
+
+    /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Spell", mappedBy="playerCharacter")
      */
     private $spells;
@@ -206,13 +212,16 @@ class PlayerCharacter
      *
      * @param \AppBundle\Entity\Spell $spell
      *
-     * @return PlayerCharacter
+     * @return bool
      */
     public function addSpell(\AppBundle\Entity\Spell $spell)
     {
+        if ($this->spells->count() == $this->nbSpellsMax){
+            return  false;
+        }
         $this->spells[] = $spell;
         $spell->setPlayerCharacter($this);
-        return $this;
+        return true;
     }
 
     /**
@@ -233,5 +242,53 @@ class PlayerCharacter
     public function getSpells()
     {
         return $this->spells;
+    }
+
+    /**
+     * Set nbSpells
+     *
+     * @param integer $nbSpells
+     *
+     * @return PlayerCharacter
+     */
+    public function setNbSpells($nbSpells)
+    {
+        $this->nbSpells = $nbSpells;
+
+        return $this;
+    }
+
+    /**
+     * Get nbSpells
+     *
+     * @return integer
+     */
+    public function getNbSpells()
+    {
+        return $this->nbSpells;
+    }
+
+    /**
+     * Set nbSpellsMax
+     *
+     * @param integer $nbSpellsMax
+     *
+     * @return PlayerCharacter
+     */
+    public function setNbSpellsMax($nbSpellsMax)
+    {
+        $this->nbSpellsMax = $nbSpellsMax;
+
+        return $this;
+    }
+
+    /**
+     * Get nbSpellsMax
+     *
+     * @return integer
+     */
+    public function getNbSpellsMax()
+    {
+        return $this->nbSpellsMax;
     }
 }

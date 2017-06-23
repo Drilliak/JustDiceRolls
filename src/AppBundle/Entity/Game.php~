@@ -54,9 +54,9 @@ class Game
 
     /**
      * @var int
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="nb_spells_max", type="integer", options={"default":0})
      */
-    private $nbMaxSpells;
+    private $nbSpellsMax;
 
     /**
      * Constructor
@@ -210,4 +210,6 @@ class Game
     {
         return $this->description;
     }
+
+
 }
