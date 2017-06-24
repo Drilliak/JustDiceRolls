@@ -1,0 +1,18 @@
+game_play_as_mj:
+    path: /partie-en-tant-que-mj/{idGame}
+    defaults:
+        _controller: AppBundle:GamePlay:playAsMj
+    methods: [GET]
+
+game_play_as_player:
+    path: /partie-en-tant-que-joueur/{idGame}
+    defaults:
+        _controller: AppBundle:GamePlay:playAsPlayer
+    methods: [GET]
+
+
+game_play_mj_ajax:
+    path: /ajax/play-as-mj
+    defaults:
+        _controller: AppBundle:GamePlay:playAsMjAjax
+    methods: [POST, GET]

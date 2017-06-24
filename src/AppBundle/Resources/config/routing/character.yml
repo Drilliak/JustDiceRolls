@@ -1,0 +1,5 @@
+show_character:
+    path: /mes-personnages
+    defaults:
+        _controller: "AppBundle:Character:showCharacters"
+    methods: [GET]

@@ -27,13 +27,19 @@ class CharacterEditorController extends Controller
             return $this->redirectToRoute('homepage');
         }
 
+        if ($player->getCharacter() == null) {
+            $this->addFlash('info', "Vous devez d'abord créé votre personnage.");
+            return $this->redirectToRoute('game_create_character');
+        }
+
         $gameRepository = $em->getRepository('AppBundle:Game');
         $game = $gameRepository->find($idGame);
 
         $this->get('acme.js_vars')->charData = [
-            "ajaxPath" => $this->generateUrl('edit_character_ajax'),
-            "idUser"   => $this->get('security.token_storage')->getToken()->getUser()->getId(),
-            "idPlayerCharacter"   => $player->getCharacter()->getId(),
+            "ajaxPath"          => $this->generateUrl('edit_character_ajax'),
+            "idUser"            => $this->get('security.token_storage')->getToken()->getUser()->getId(),
+            "idPlayerCharacter" => $player->getCharacter()->getId(),
+            "nbSpellsMax"       => $player->getCharacter()->getNbSpellsMax()
         ];
 
         return $this->render("AppBundle:CharacterEditor:character_edit.html.twig", [
@@ -77,7 +83,7 @@ class CharacterEditorController extends Controller
 
         $spell->setName($name);
         $spell->setDescription($description);
-        if ($character->addSpell($spell)){
+        if ($character->addSpell($spell)) {
             $em->persist($spell);
         }
         $em->flush();

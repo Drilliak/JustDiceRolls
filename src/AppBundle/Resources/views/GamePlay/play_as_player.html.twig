@@ -1,12 +1,20 @@
 {% extends "AppBundle::base.html.twig" %}
 
-{% block title %}{{ gameName }} -  {% endblock %}
+{% block title %}{{ gameName }}  {% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
 {% endblock %}
 
 {% block content %}
+    <div class="container">
+
+        <div class="row">
+            <a class="pull-right btn btn-default" data-toggle="tooltip"
+               title="Modifier le personnage" href="{{ path('edit_character', {'idGame': gameId}) }}"><span
+                        class="glyphicon glyphicon-cog"></span></a>
+        </div>
+    </div>
 {% endblock %}
 
 {% block javascripts %}

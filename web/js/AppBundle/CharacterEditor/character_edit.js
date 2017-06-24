@@ -3,6 +3,11 @@ let jsVars = jQuery('#js-vars').data('vars').charData;
 let ajaxPath = jsVars.ajaxPath;
 let idUser = jsVars.idUser;
 let idPlayerCharacter = jsVars.idPlayerCharacter;
+let nbSpellsMax = jsVars.nbSpellsMax;
+
+if ($('#spells-list > a').length >= nbSpellsMax){
+    $('#create-new-spell-button').prop('disabled', true);
+}
 
 /**
  * Création d'un nouveau sort.
@@ -53,7 +58,23 @@ let idPlayerCharacter = jsVars.idPlayerCharacter;
         let spellName = $('#spell-name').val();
         let spellDescription = $('#spell-description').val();
        $('#create-new-spell-body fieldset').remove();
+
+       $('#spells-list').append(`
+             <a href="#" class="list-group-item clearfix">
+                <h4 class="list-group-item-heading">${spellName}</h4>
+                <p class="list-group-item-text text-justify">
+                    ${spellDescription}
+                <p class="pull-right">
+                    <button class="btn btn-default">Modifier</button>
+                </p>
+            </a>
+        `);
+
        newSpellBody.append(`<button class="btn btn-default" id="create-new-spell-button">Ajouter un sort</button>`);
+
+        if ($('#spells-list > a').length >= nbSpellsMax){
+            $('#create-new-spell-button').prop('disabled', true);
+        }
        $.post(
             ajaxPath,
            {

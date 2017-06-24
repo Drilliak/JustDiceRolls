@@ -75,76 +75,74 @@ une cohérence dans l'affichage #}
                 </tr>
                 <tr class="player-data" id="player-data-{{ player.id }}">
                     <th colspan="{{ allowedCharacteristics|length +2 }}">
-                        <div class="container">
-                            <fieldset class="col-sm-6">
-                                <div class="section">
-                                    <legend>Caractéristiques</legend>
-                                    <div class="panel panel-default characteristic-panel">
-                                        <form class="form-horizontal">
-                                            {% if player.character %}
-                                                {% for characteristic in player.character.characteristics %}
-                                                    <div class="form-group characteristic" style="margin-bottom: 0; ">
-                                                        <div class="panel-body">
-                                                            <label class="col-xs-2 col-lg-1 control-label">{{ characteristic.name }}</label>
-                                                            {% if characteristic.hasMax %}
-                                                                {% if characteristic.maxValue != 0 %}
-                                                                    {% set width = characteristic.value / characteristic.maxValue *100 %}
-                                                                {% else %}
-                                                                    {% set width = 100 %}
-                                                                {% endif %}
-                                                                <div class="col-xs-10 col-lg-11"
-                                                                     style="margin-top:7px;">
-                                                                    <div class="{{ formatName(characteristic.name) }}">
-                                                                        <div class="progress">
-                                                                            <div class="progress-bar progress-bar-success progress-bar-striped active"
-                                                                                 role="progressbar"
-                                                                                 style="width:{{ width ~"%;" }}">
-                                                                                <span>{{ characteristic.value ~ '/' ~ characteristic.maxValue }}</span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            {% else %}
-                                                                <div class="col-xs-10 col-lg-11 text-center"
-                                                                     style="margin-top:7px;">
-                                                                    <div class="{{ formatName(characteristic.name) }}">
-                                                                        <span>{{ characteristic.value }}</span>
-                                                                    </div>
-                                                                </div>
-                                                            {% endif %}
-                                                        </div>
-                                                    </div>
-                                                {% endfor %}
-                                            {% else %}
-                                                <div class="form-group">
-                                                    <div class="panel-body">
-                                                        <p>Aucune donnée</p>
-                                                    </div>
-                                                </div>
-                                            {% endif %}
-
-                                        </form>
+                        {% if player.character %}
+                            <div class="row">
+                                <fieldset class="col-lg-6">
+                                    <legend>Histoire</legend>
+                                    <div class="media">
+                                        <div class="media-left media-middle">
+                                            <img src="{{ asset('/img/tokens/' ~ player.character.token)|imagine_filter('large_token') }}"
+                                                 alt="">
+                                        </div>
+                                        <div class="media-body text-justify">
+                                            <p>{{ player.character.backStory }}</p>
+                                        </div>
                                     </div>
-                                </div>
-
-                                <div class="section">
-                                    <legend>Compétences</legend>
-                                    <div class="panel panel-default">
-                                        <form class="form-horizontal">
-                                            <div class="form-group">
+                                </fieldset>
+                                <fieldset class="col-lg-6">
+                                    <legend>Caractéristiques</legend>
+                                    <form class="form-horizontal">
+                                        {% for characteristic in player.character.characteristics %}
+                                            <div class="form-group characteristic">
                                                 <div class="panel-body">
-                                                    <label class="control-label col-sm-2" for="email">Email:</label>
-                                                    <div class="col-sm-10">
-                                                        <input type="email" class="form-control" id="email"
-                                                               placeholder="Enter email">
-                                                    </div>
+                                                    <label class="col-xs-2 col-lg-1 control-label">{{ characteristic.name }}</label>
+                                                    {% if characteristic.hasMax %}
+                                                        {% if characteristic.maxValue != 0 %}
+                                                            {% set width = characteristic.value / characteristic.maxValue *100 %}
+                                                        {% else %}
+                                                            {% set width = 100 %}
+                                                        {% endif %}
+                                                        <div class="col-xs-10 col-lg-11"
+                                                             style="margin-top:7px;">
+                                                            <div class="{{ formatName(characteristic.name) }}">
+                                                                <div class="progress">
+                                                                    <div class="progress-bar progress-bar-success progress-bar-striped active"
+                                                                         role="progressbar"
+                                                                         style="width:{{ width ~"%;" }}">
+                                                                        <span>{{ characteristic.value ~ '/' ~ characteristic.maxValue }}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {% else %}
+                                                        <div class="col-xs-10 col-lg-11 text-center"
+                                                             style="margin-top:7px;">
+                                                            <div class="{{ formatName(characteristic.name) }}">
+                                                                <span>{{ characteristic.value }}</span>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
                                                 </div>
                                             </div>
-                                        </form>
+                                        {% endfor %}
+                                    </form>
+                                </fieldset>
+                            </div>
+                            <div class="row">
+                                <fieldset>
+                                    <legend>Sorts</legend>
+                                    <div class="panel-body">
+
                                     </div>
+                                </fieldset>
+                            </div>
+                        {% else %}
+                            <div class="panel panel-default characteristic-panel">
+                                <div class="panel-body">
+                                    <p>Aucune donnée</p>
                                 </div>
-                            </fieldset>
-                        </div>
+                            </div>
+                        {% endif %}
                     </th>
                 </tr>
             {% endfor %}
@@ -160,10 +158,5 @@ une cohérence dans l'affichage #}
     {{ parent() }}
     <script src= {{ asset('js/jquery-ui.min.js') }}></script>
     <script src="{{ asset('js/AppBundle/GamePlay/play_as_mj.js') }}"></script>
-    <script>
-        $('.characteristic').draggable({
-            containment: '.characteristic-panel'
-        });
-    </script>
 
 {% endblock %}

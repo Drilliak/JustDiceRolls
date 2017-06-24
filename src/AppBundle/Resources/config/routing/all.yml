@@ -1,0 +1,20 @@
+game:
+    resource: "@AppBundle/Resources/config/routing/game.yml"
+
+game_editor:
+    resource: "@AppBundle/Resources/config/routing/game_editor.yml"
+
+game_play:
+    resource: "@AppBundle/Resources/config/routing/game_play.yml"
+
+character:
+    resource: "@AppBundle/Resources/config/routing/character.yml"
+
+homepage:
+    path: /
+    defaults:
+        _controller: AppBundle:Home:index
+    methods: [GET]
+
+
+

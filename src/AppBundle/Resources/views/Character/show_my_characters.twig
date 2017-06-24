@@ -1,0 +1,37 @@
+{% extends "AppBundle::base.html.twig" %}
+
+{% block title %}Mes personnages{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h2 class="page-header">Mes personnages</h2>
+                <ul class="list-unstyled">
+                    {% for player in players %}
+                        {% if player.character is not null %}
+                            <li class="media">
+                                <div class="media-left">
+                                    <a href="{{ path('edit_character', {'idGame' : player.game.id }) }}">
+                                        <img class="media-object"
+                                             src="{{ asset( 'img/tokens/' ~ player.character.token) }}"
+                                             style="width:60px" alt="">
+                                    </a>
+                                </div>
+                                <div class="media-body">
+                                    <h4 class="media-heading"><a href="{{ path('edit_character', {'idGame' : player.game.id }) }}"
+                                                                 style="text-decoration: none; color:black;">{{ player.character.name }}</a>
+                                        <small><i>{{ player.game.name }}</i></small>
+                                    </h4>
+                                    <p class="text-justify">{{ player.character.backstory|truncate(200) }}</p>
+                                </div>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}{% endblock %}

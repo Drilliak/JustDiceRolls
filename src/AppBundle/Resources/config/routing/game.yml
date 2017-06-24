@@ -1,0 +1,23 @@
+game_create_character:
+    path: /creation-personnage/{idGame}
+    defaults:
+        _controller: AppBundle:Game:createCharacter
+    methods: [GET, POST]
+
+show_games_as_player:
+    path: /parties-en-tant-que-joueur
+    defaults:
+        _controller: AppBundle:Game:showGamesAsPlayer
+    methods: [GET]
+
+show_games_as_mj:
+    path: /parties-en-tant-que-mj
+    defaults:
+        _controller: AppBundle:Game:showGamesAsGm
+    methods: [GET]
+
+game_create:
+    path: /creation-partie
+    defaults:
+        _controller: AppBundle:Game:createNewGame
+    methods: [GET]

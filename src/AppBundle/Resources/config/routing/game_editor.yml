@@ -1,0 +1,29 @@
+game_edition:
+    path: /edition-partie/{idGame}
+    defaults:
+        _controller: AppBundle:GameEditor:edit
+    methods: [GET]
+
+game_edition_ajax:
+    path: /ajax/edition-partie
+    defaults:
+        _controller: AppBundle:GameEditor:editAjax
+    methods: [GET, POST]
+
+game_edition_autocomplete:
+    path: /edition-partie-autocomplete-username
+    defaults:
+        _controller: AppBundle:GameEditor:autocomplete
+    methods: [GET]
+
+edit_character:
+    path: /edition-personnage/{idGame}
+    defaults:
+        _controller: AppBundle:CharacterEditor:editCharacter
+    methods: [GET]
+
+edit_character_ajax:
+    path: ajax/edit-character
+    defaults:
+        _controller: AppBundle:CharacterEditor:editCharacterAjax
+    methods: [GET, POST]

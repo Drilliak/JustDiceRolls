@@ -2,7 +2,7 @@ user:
     resource: "@UserBundle/Resources/config/routing.yml"
 
 app:
-    resource: '@AppBundle/Resources/config/routing.yml'
+    resource: '@AppBundle/Resources/config/routing/all.yml'
 
 _liip_imagine:
     resource: "@LiipImagineBundle/Resources/config/routing.xml"

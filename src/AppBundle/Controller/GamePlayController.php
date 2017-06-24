@@ -84,9 +84,9 @@ class GamePlayController extends Controller
         }
 
         $this->get('acme.js_vars')->charData = [
-            "ajaxPath"  => $this->generateUrl("game_play_mj_ajax"),
-            "gameId"    => $game->getId(),
-            "idPlayers" => $idPlayers,
+            "ajaxPath"               => $this->generateUrl("game_play_mj_ajax"),
+            "gameId"                 => $game->getId(),
+            "idPlayers"              => $idPlayers,
             "allowedCharacteristics" => $allowedCharacteristics,
         ];
 
@@ -154,6 +154,7 @@ class GamePlayController extends Controller
     {
         $playerRepository = $this->getDoctrine()->getManager()->getRepository('AppBundle:Player');
 
+        /** @var Player $player */
         $player = $playerRepository->find($idPlayer);
 
         /** @var PlayerCharacter $character */
@@ -203,6 +204,9 @@ class GamePlayController extends Controller
         }
 
 
-        return $this->render('@App/GamePlay/play_as_player.html.twig', ['gameName' => $game->getName()]);
+        return $this->render('@App/GamePlay/play_as_player.html.twig', [
+            'gameName' => $game->getName(),
+            'gameId'   => $game->getId(),
+        ]);
     }
 }

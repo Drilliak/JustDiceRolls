@@ -9,37 +9,52 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <fieldset class="col-md-6">
+            <fieldset class="col-md-12">
                 <legend>Informations générales</legend>
                 <div class="panel panel-default">
+                    <img class="center-block" src="{{ asset('/img/tokens/' ~ character.token)|imagine_filter('large_token') }}" alt="">
                     <form class="form-horizontal">
                         <div class="form-group">
                             <div class="panel-body">
                                 <label for="character-name" class="control-label col-xs-3 col-sm-2">Nom</label>
                                 <div class="col-xs-9 col-sm-10">
-                                    <input name=character-name" id="character-name" type="text" class="form-control" value="{{ character.name }}">
+                                    <input name=character-name" id="character-name" type="text" class="form-control"
+                                           value="{{ character.name }}">
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="panel-body">
-                                <label for="character-backstory" class="control-label col-xs-3 col-sm-2">Histoire</label>
+                                <label for="character-backstory"
+                                       class="control-label col-xs-3 col-sm-2">Histoire</label>
                                 <div class="col-xs-9 col-sm-10">
-                                    <textarea id="character-backstory" rows="5" class="form-control">{{ character.backstory }}</textarea>
+                                    <textarea id="character-backstory" rows="5"
+                                              class="form-control">{{ character.backstory }}</textarea>
                                 </div>
                             </div>
                         </div>
                     </form>
                 </div>
             </fieldset>
-            <fieldset class="col-md-6">
+        </div>
+        <div class="row">
+            <fieldset class="col-md-12">
                 <legend>Sorts</legend>
                 <div class="panel panel-default">
-                    <form class="form-horizontal">
+                    <div id="spells-list" class="list-group col-sm-8 col-sm-offset-2">
                         {% for spell in character.spells %}
-                            {{ spell.name }}
-                            {{ spell.description }}
+                            <a href="#" class="list-group-item clearfix">
+                                <h4 class="list-group-item-heading">{{ spell.name }}</h4>
+                                <p class="list-group-item-text text-justify">
+                                    {{ spell.description }}
+                                <p class="pull-right">
+                                    <button class="btn btn-default">Modifier</button>
+                                </p>
+                            </a>
                         {% endfor %}
+                    </div>
+                    <form class="form-horizontal">
+
                         <div class="form-group">
                             <div class="panel-body">
                             </div>

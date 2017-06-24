@@ -92,3 +92,8 @@ liip_imagine:
                thumbnail:
                    size: [64,64]
                    mode: outbound
+       large_token:
+            filters:
+                thumbnail:
+                    size: [128,128]
+                    mode: outbound

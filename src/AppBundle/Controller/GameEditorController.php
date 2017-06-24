@@ -39,7 +39,7 @@ class GameEditorController extends Controller
         $this->get('acme.js_vars')->charData = [
             "idGame"           => $idGame,
             "ajaxPath"         => $this->generateUrl('game_edition_ajax'),
-            "autocompletePath" => $this->generateUrl('game_edition_autocomplete')
+            "autocompletePath" => $this->generateUrl('game_edition_autocomplete'),
         ];
 
 
@@ -200,8 +200,9 @@ class GameEditorController extends Controller
         return new JsonResponse('player removed');
     }
 
-    private function changeNbSpellsMax($idGame, $value){
-        $value = (int) trim($value);
+    private function changeNbSpellsMax($idGame, $value)
+    {
+        $value = (int)trim($value);
         $em = $this->getDoctrine()->getManager();
         $gameRepository = $em->getRepository('AppBundle:Game');
         $game = $gameRepository->find($idGame);
