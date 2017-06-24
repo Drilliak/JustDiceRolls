@@ -132,7 +132,17 @@ une cohérence dans l'affichage #}
                                 <fieldset>
                                     <legend>Sorts</legend>
                                     <div class="panel-body">
-
+                                        <div class="list-group spells">
+                                            {% for spell in player.character.spells %}
+                                                <div>
+                                                    <a href="javascript:void(0)" class="list-group-item">
+                                                        <h4 class="list-group-item-heading">{{ spell.name }}</h4>
+                                                        <p class="list-group-item-text">{{ spell.description }}</p>
+                                                    </a>
+                                                    <p class="spell-data">test</p>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
                                     </div>
                                 </fieldset>
                             </div>

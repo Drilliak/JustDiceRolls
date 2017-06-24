@@ -9,6 +9,7 @@ let lastProgressBarSelected;
 let nbCharacteristicsHidden = 0;
 
 $('#hidden-characteristics-menu').hide();
+$('.spell-data').hide();
 
 
 let canonicalCharacteristics = []
@@ -177,4 +178,19 @@ function format(text) {
 
     });
 
+})();
+
+/**
+ * Affiche ou masque les caractéristiques des sorts
+ */
+(function(){
+    $('.spells').on('click', 'a', function () {
+        let spellData = $(this).parent().find('p.spell-data');
+        if (spellData.is(':visible')){
+            spellData.hide();
+        } else {
+            spellData.show();
+        }
+
+    });
 })();
