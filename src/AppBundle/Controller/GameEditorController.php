@@ -107,10 +107,13 @@ class GameEditorController extends Controller
         /** @var Player $player */
         foreach ($players as $player) {
             $character = $player->getCharacter();
-            $characteristic->setHasMax(false);
-            $characteristic->setValue(0);
-            $character->addCharacteristic($characteristic);
-            $player->setCharacter($character);
+            if ($character !== null){
+                $characteristic->setHasMax(false);
+                $characteristic->setValue(0);
+                $character->addCharacteristic($characteristic);
+                $player->setCharacter($character);
+            }
+
         }
 
         $em->flush();

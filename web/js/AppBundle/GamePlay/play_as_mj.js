@@ -48,7 +48,7 @@ function format(text) {
  * Changement d'une valeur dans le tableau
  */
 (function () {
-    $('input').on('paste keyup mouseup', function () {
+    $('tbody').on('input', '.characteristic', function () {
         let characteristic = $(this).closest("th").attr('class');
         let playerId = $(this).closest("tr").attr('class').split("-")[1];
         let newValue = $(this).val().trim();
@@ -184,8 +184,9 @@ function format(text) {
  * Affiche ou masque les caractéristiques des sorts
  */
 (function(){
+    $('#value-dice-player').click(false);
     $('.spells').on('click', 'a', function () {
-        let spellData = $(this).parent().find('p.spell-data');
+        let spellData = $(this).parent().find('.spell-data');
         if (spellData.is(':visible')){
             spellData.hide();
         } else {
