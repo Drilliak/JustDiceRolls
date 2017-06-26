@@ -143,7 +143,6 @@ class PlayerCharacter
     }
 
 
-
     /**
      * Set token
      *
@@ -225,8 +224,8 @@ class PlayerCharacter
      */
     public function addSpell(\AppBundle\Entity\Spell $spell)
     {
-        if ($this->spells->count() == $this->nbSpellsMax){
-            return  false;
+        if ($this->spells->count() == $this->nbSpellsMax) {
+            return false;
         }
         $this->spells[] = $spell;
         $spell->setPlayerCharacter($this);

@@ -6,6 +6,7 @@ use AppBundle\Entity\Characteristic;
 use AppBundle\Entity\Game;
 use AppBundle\Entity\Player;
 use AppBundle\Entity\PlayerCharacter;
+use AppBundle\Entity\Statistic;
 use AppBundle\Form\PlayerCharacterType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -18,16 +19,16 @@ class GameController extends Controller
     public function createNewGameAction(Request $request)
     {
         $gameName = $request->get('game-name');
-        $pv = new Characteristic("PV", true);
-        $mana = new Characteristic("Mana", true);
-        $level = new Characteristic("Niveau");
+        $pv = new Statistic("PV", true);
+        $mana = new Statistic("Mana", true);
+        $level = new Statistic("Niveau");
         $gameMaster = $this->get('security.token_storage')->getToken()->getUser();
 
         $game = new Game();
         $game->setName($gameName);
-        $game->addAllowedCharacteristic($level);
-        $game->addAllowedCharacteristic($pv);
-        $game->addAllowedCharacteristic($mana);
+        $game->addStatistic($level);
+        $game->addStatistic($pv);
+        $game->addStatistic($mana);
         $game->setGameMaster($gameMaster);
 
         $em = $this->getDoctrine()->getManager();

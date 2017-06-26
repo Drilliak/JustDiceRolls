@@ -204,28 +204,4 @@ class Statistic
     {
         return $this->playerCharacter;
     }
-
-    /**
-     * Set game
-     *
-     * @param \AppBundle\Entity\Game $game
-     *
-     * @return Statistic
-     */
-    public function setGame(\AppBundle\Entity\Game $game = null)
-    {
-        $this->game = $game;
-
-        return $this;
-    }
-
-    /**
-     * Get game
-     *
-     * @return \AppBundle\Entity\Game
-     */
-    public function getGame()
-    {
-        return $this->game;
-    }
 }

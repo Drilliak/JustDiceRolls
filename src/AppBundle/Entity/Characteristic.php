@@ -28,12 +28,6 @@ class Characteristic
      */
     private $name;
 
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="hasMax", type="boolean")
-     */
-    private $hasMax;
 
     /**
      * @var float
@@ -42,13 +36,6 @@ class Characteristic
      */
     private $value;
 
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="max_value", type="float", nullable=true)
-     *
-     */
-    private $maxValue;
 
     /**
      * @var
@@ -60,22 +47,17 @@ class Characteristic
 
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Game", inversedBy="allowedCharacteristics")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Game", inversedBy="characteristics")
      * @ORM\JoinColumn(name="game_id", referencedColumnName="id")
      */
     private $game;
 
-    public function __construct($name, $hasMax = false)
-    {
-        $this->name = $name;
-        $this->hasMax = $hasMax;
-        $this->value =0;
-    }
+
 
     /**
      * Get id
      *
-     * @return int
+     * @return integer
      */
     public function getId()
     {
@@ -107,54 +89,6 @@ class Characteristic
     }
 
     /**
-     * Set hasMax
-     *
-     * @param boolean $hasMax
-     *
-     * @return Characteristic
-     */
-    public function setHasMax($hasMax)
-    {
-        $this->hasMax = $hasMax;
-
-        return $this;
-    }
-
-    /**
-     * Get hasMax
-     *
-     * @return bool
-     */
-    public function getHasMax()
-    {
-        return $this->hasMax;
-    }
-
-    /**
-     * Set game
-     *
-     * @param \AppBundle\Entity\Game $game
-     *
-     * @return Characteristic
-     */
-    public function setGame(\AppBundle\Entity\Game $game = null)
-    {
-        $this->game = $game;
-
-        return $this;
-    }
-
-    /**
-     * Get game
-     *
-     * @return \AppBundle\Entity\Game
-     */
-    public function getGame()
-    {
-        return $this->game;
-    }
-
-    /**
      * Set value
      *
      * @param float $value
@@ -179,38 +113,13 @@ class Characteristic
     }
 
     /**
-     * Set maxValue
-     *
-     * @param float $maxValue
-     *
-     * @return Characteristic
-     */
-    public function setMaxValue($maxValue)
-    {
-        if ($this->hasMax)
-            $this->maxValue = $maxValue;
-
-        return $this;
-    }
-
-    /**
-     * Get maxValue
-     *
-     * @return float
-     */
-    public function getMaxValue()
-    {
-        return $this->maxValue;
-    }
-
-    /**
      * Set playerCharacter
      *
      * @param \AppBundle\Entity\PlayerCharacter $playerCharacter
      *
      * @return Characteristic
      */
-    public function setPlayerCharacter(\AppBundle\Entity\PlayerCharacter $playerCharacter)
+    public function setPlayerCharacter(\AppBundle\Entity\PlayerCharacter $playerCharacter = null)
     {
         $this->playerCharacter = $playerCharacter;
 
@@ -225,5 +134,29 @@ class Characteristic
     public function getPlayerCharacter()
     {
         return $this->playerCharacter;
+    }
+
+    /**
+     * Set game
+     *
+     * @param \AppBundle\Entity\Game $game
+     *
+     * @return Characteristic
+     */
+    public function setGame(\AppBundle\Entity\Game $game = null)
+    {
+        $this->game = $game;
+
+        return $this;
+    }
+
+    /**
+     * Get game
+     *
+     * @return \AppBundle\Entity\Game
+     */
+    public function getGame()
+    {
+        return $this->game;
     }
 }
