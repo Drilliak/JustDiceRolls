@@ -49,6 +49,14 @@ class PlayerCharacter
     private $characteristics;
 
     /**
+     * @var array
+     *
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Statistic", mappedBy="playerCharacter")
+     *
+     */
+    private $statistics;
+
+    /**
      * @ORM\Column(type="string")
      * @Assert\File(
      *     mimeTypes={"image/png"},
@@ -73,6 +81,7 @@ class PlayerCharacter
     {
         $this->characteristics = new ArrayCollection();
         $this->spells = new ArrayCollection();
+        $this->statistics = new ArrayCollection();
     }
 
     /**
@@ -290,5 +299,39 @@ class PlayerCharacter
     public function getNbSpellsMax()
     {
         return $this->nbSpellsMax;
+    }
+
+    /**
+     * Add statistic
+     *
+     * @param \AppBundle\Entity\Statistic $statistic
+     *
+     * @return PlayerCharacter
+     */
+    public function addStatistic(\AppBundle\Entity\Statistic $statistic)
+    {
+        $this->statistics[] = $statistic;
+        $statistic->setPlayerCharacter($this);
+        return $this;
+    }
+
+    /**
+     * Remove statistic
+     *
+     * @param \AppBundle\Entity\Statistic $statistic
+     */
+    public function removeStatistic(\AppBundle\Entity\Statistic $statistic)
+    {
+        $this->statistics->removeElement($statistic);
+    }
+
+    /**
+     * Get statistics
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getStatistics()
+    {
+        return $this->statistics;
     }
 }

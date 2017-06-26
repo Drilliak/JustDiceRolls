@@ -43,10 +43,18 @@ class PlayerCharacter
      *
      *
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Characteristic", mappedBy="playerCharacter")
-     * @ORM\OrderBy({"name" = "ASC" })
+     * @ORM\OrderBy({"hasMax" = "DESC"})
      *
      */
     private $characteristics;
+
+    /**
+     * @var array
+     *
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Statistic", mappedBy="playerCharacter")
+     *
+     */
+    private $statistics;
 
     /**
      * @ORM\Column(type="string")
@@ -73,6 +81,7 @@ class PlayerCharacter
     {
         $this->characteristics = new ArrayCollection();
         $this->spells = new ArrayCollection();
+        $this->statistics = new ArrayCollection();
     }
 
     /**
@@ -212,16 +221,16 @@ class PlayerCharacter
      *
      * @param \AppBundle\Entity\Spell $spell
      *
-     * @return PlayerCharacter
+     * @return bool
      */
     public function addSpell(\AppBundle\Entity\Spell $spell)
     {
-        if ($this->spells->count() == $this->nbSpells){
-            return  $this;
+        if ($this->spells->count() == $this->nbSpellsMax){
+            return  false;
         }
         $this->spells[] = $spell;
         $spell->setPlayerCharacter($this);
-        return $this;
+        return true;
     }
 
     /**
@@ -266,5 +275,29 @@ class PlayerCharacter
     public function getNbSpells()
     {
         return $this->nbSpells;
+    }
+
+    /**
+     * Set nbSpellsMax
+     *
+     * @param integer $nbSpellsMax
+     *
+     * @return PlayerCharacter
+     */
+    public function setNbSpellsMax($nbSpellsMax)
+    {
+        $this->nbSpellsMax = $nbSpellsMax;
+
+        return $this;
+    }
+
+    /**
+     * Get nbSpellsMax
+     *
+     * @return integer
+     */
+    public function getNbSpellsMax()
+    {
+        return $this->nbSpellsMax;
     }
 }
