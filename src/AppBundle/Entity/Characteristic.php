@@ -53,6 +53,11 @@ class Characteristic
     private $game;
 
 
+    public function __construct($name)
+    {
+        $this->name = $name;
+        $this->value = 0;
+    }
 
     /**
      * Get id

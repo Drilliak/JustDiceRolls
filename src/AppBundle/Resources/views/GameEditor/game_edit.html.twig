@@ -7,6 +7,11 @@
 
     <link rel="stylesheet" href="{{ asset('css/jquery-ui.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/AppBundle/GameEditor/game_edit.css') }}">
+    <style>
+        .popover {
+            max-width: 700px;
+        }
+    </style>
 
 {% endblock %}
 
@@ -23,14 +28,90 @@
         </div>
 
         <div class="row">
-            <div class="col-lg-6">
+            <div class="col-md-6" id="statistic-body">
                 <fieldset>
-                    <legend>Statistiques</legend>
+                    <legend>Statistiques
+                        <span style="font-size: 0.5em;" class="pull-right">
+                            <a href="javascript:void(0)" data-toggle="popover" title="Statistiques" data-placement="bottom" data-trigger="hover"
+                               data-content="Les statistiques représentent les valeurs physiques propres au personnage. Les statistiques
+                               ne doivent pas être utilisées pour représenter un attribut du personnage qui servira à déterminer la réussite, ou non
+                               d'un jet de dé.">Aide</a>
+                        </span>
+                    </legend>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Valeur max</th>
+                        </tr>
+                        </thead>
+                        <tbody id ="statistic-tbody">
+                        {% for statistic in statistics %}
+                            <tr id="{{ statistic.id }}">
+                                <td>{{ statistic.name }}</td>
+                                <td>
+                                    <select class="form-control input-xs">
+                                        <option>Oui</option>
+                                        <option {% if not statistic.hasMax %} selected {% endif %}>Non</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger remove-statistic"> Supprimer</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <form action="javascript:void(0)">
+                            <div class="form-group col-sm-5 col-xs-6">
+                                <input type="text" class="form-control" id="new-statistic-input" placeholder="Nouvelle statistique">
+                            </div>
+                            <div class="col-sm-4 col-xs-6">
+                                <button type="submit" class="btn btn-default" id="new-statistic-button">Ajouter</button>
+                            </div>
+
+                        </form>
+                    </div>
                 </fieldset>
             </div>
-            <div class="col-lg-6">
+            <div class="col-md-6" id="characteristic-body">
                 <fieldset>
-                    <legend>Caractéristiques</legend>
+                    <legend>Caractéristiques
+                        <span style="font-size: 0.5em;" class="pull-right">
+                            <a href="javascript:void(0)" data-toggle="popover" title="Caractéristique" data-placement="bottom" data-trigger="hover"
+                               data-content="Une caractéristique est une valeur qui représentera la valeur maximale de succès
+                                d'un joueur lors d'un jet de dé. Des exemples classiques sont : Force, Intelligence ou Social">Aide</a>
+                        </span>
+                    </legend>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Nom</th>
+                        </tr>
+                        </thead>
+                        <tbody id ="characteristic-tbody">
+                        {% for characteristic in characteristics %}
+                            <tr id="{{ characteristic.id }}">
+                                <td>{{ characteristic.name }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-danger remove-characteristic">Supprimer</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <form action="javascript:void(0)">
+                            <div class="form-group col-sm-6 col-xs-6">
+                                <input type="text" class="form-control" id="new-characteristic-input" placeholder="Nouvelle caractéristique">
+                            </div>
+                            <div class="col-sm-4 col-xs-6">
+                                <button type="submit" class="btn btn-default" id="new-characteristic-button">Ajouter</button>
+                            </div>
+
+                        </form>
+                    </div>
                 </fieldset>
             </div>
         </div>
@@ -43,8 +124,7 @@
                         <div class="panel-heading clearfix row" style="margin: 0;">
 
                             <div class="input-group col-xs-offset-7">
-                                <input type="text" class="form-control" id="new-player"
-                                       placeholder="Ajouter un utilisateur">
+                                <input type="text" class="form-control" id="new-player" placeholder="Ajouter un utilisateur">
                             </div>
                         </div>
                     </div>
@@ -97,8 +177,6 @@
                 </div>
             </div>
         </fieldset>
-
-
     </div>
 {% endblock %}
 
@@ -109,5 +187,7 @@
     {{ parent() }}
     <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
     <script src="{{ asset('js/AppBundle/GameEditor/game_edit.js') }}"></script>
-    <script>$('[data-toogle="tooltip"]').tooltip();</script>
+    <script> $('[data-toggle="popover"]').popover({
+            container: 'body'
+        }); </script>
 {% endblock %}

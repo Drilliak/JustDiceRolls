@@ -3,9 +3,9 @@
 namespace AppBundle\Controller;
 
 
-use AppBundle\Entity\Characteristic;
 use AppBundle\Entity\Player;
-use Doctrine\Common\Collections\ArrayCollection;
+use AppBundle\Entity\Statistic;
+use AppBundle\Entity\Characteristic;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,18 +37,17 @@ class GameEditorController extends Controller
         }
 
         $this->get('acme.js_vars')->charData = [
-            "idGame"           => $idGame,
-            "ajaxPath"         => $this->generateUrl('game_edition_ajax'),
-            "autocompletePath" => $this->generateUrl('game_edition_autocomplete'),
+            "idGame" => $idGame,
         ];
 
 
         return $this->render("AppBundle:GameEditor:game_edit.html.twig", [
                 "gameName"        => $game->getName(),
-                "characteristics" => $game->getAllowedCharacteristics(),
                 "idGame"          => $idGame,
                 "nbSpellsMax"     => $game->getNbSpellsMax(),
-                "players"         => $game->getPlayers()->toArray()
+                "players"         => $game->getPlayers(),
+                "statistics"      => $game->getStatistics(),
+                "characteristics" => $game->getCharacteristics()
             ]
         );
     }
@@ -61,22 +60,24 @@ class GameEditorController extends Controller
         // if ($request->isXmlHttpRequest()) {
         $currentUserId = $this->get('security.token_storage')->getToken()->getUser()->getId();
 
-        $idGame = $request->get('idGame');
+        $idGame = (int) strip_tags($request->get('idGame'));
         $gameMasterId = $this->getDoctrine()->getManager()->getRepository('AppBundle:Game')->find($idGame)->getGameMaster()->getId();
 
         if ($currentUserId != $gameMasterId) {
             return new JsonResponse('Invalid user');
         }
 
-        $action = $request->get('action');
+        $action = strip_tags($request->get('action'));
         switch ($action) {
+            case "add-statistic":
+                $stat = $request->get('stat');
+                return $this->addStatistic($idGame, $stat);
+            case "remove-stat":
+                $statId = $request->get('statId');
+                return $this->removeStat($idGame, $statId);
             case "add-characteristic":
-                return $this->addCharacteristic($idGame, $request->get('newCharacteristicName'));
-            case "change-has-max":
-                return $this->changeHasMax($idGame, trim($request->get('characteristicName')), $request->get('newHasMax'));
-            case "remove-characteristic":
-                $hasMax = (trim($request->get('hasMax') == "Oui")) ? true : false;
-                return $this->removeCharacteristic($idGame, trim($request->get('characteristicName')), $hasMax);
+                $characteristic = $request->get('characteristic');
+                return $this->addCharacteristic($idGame, $characteristic);
             case "add-player":
                 $playerName = $request->get('playerName');
                 return $this->addPlayer($idGame, $playerName);
@@ -92,81 +93,95 @@ class GameEditorController extends Controller
         return new Response('This is not an ajax request.');
     }
 
-    private function addCharacteristic($idGame, $newCharacteristicName)
-    {
+
+    private function addStatistic($idGame, $statName){
+        $statName = trim(strip_tags($statName));
         $em = $this->getDoctrine()->getManager();
         $gameRepository = $em->getRepository('AppBundle:Game');
         $playerRepository = $em->getRepository('AppBundle:Player');
+
         $game = $gameRepository->find($idGame);
-
-
-        $characteristic = new Characteristic($newCharacteristicName);
-        $game->addAllowedCharacteristic($characteristic);
-
         $players = $playerRepository->findPlayers($idGame);
+
+        $stat = new Statistic($statName);
+
+        $game->addStatistic($stat);
         /** @var Player $player */
-        foreach ($players as $player) {
+        foreach ($players as $player){
             $character = $player->getCharacter();
             if ($character !== null){
-                $characteristic->setHasMax(false);
+                $stat->setHasMax(false);
+                $stat->setValue(0);
+                $character->addStatistic($stat);
+                $player->setCharacter($character);
+            }
+        }
+        $em->flush();
+
+        return new JsonResponse(['id' => $stat->getId()]);
+
+    }
+
+    private function removeStat($idGame, $statId){
+        $statId = (int) strip_tags($statId);
+        $em = $this->getDoctrine()->getManager();
+        $gameRepository = $em->getRepository('AppBundle:Game');
+        $playerRepository = $em->getRepository('AppBundle:Player');
+        $statRepository = $em->getRepository('AppBundle:Statistic');
+
+        $game = $gameRepository->find($idGame);
+        $players = $playerRepository->findPlayers($idGame);
+        $stat = $statRepository->find($statId);
+
+        $game->removeStatistic($stat);
+        /** @var Player $player */
+        foreach($players as $player){
+            $character = $player->getCharacter();
+            if ($character !== null){
+                /** @var Statistic $statistic */
+                foreach($character->getStatistics() as $statistic){
+                    if (strcasecmp($statistic->getName(), $stat->getName()) == 0){
+                        $character->removeStatistic($statistic);
+                        $player->setCharacter($character);
+                        break;
+                    }
+                }
+            }
+        }
+        $em->remove($stat);
+        $em->flush();
+
+        $name = $stat->getName();
+        return new JsonResponse("Statistic $name removed");
+
+    }
+
+    private function addCharacteristic($idGame, $characteristicName){
+        $characteristicName= trim(strip_tags($characteristicName));
+
+        $em = $this->getDoctrine()->getManager();
+        $gameRepository = $em->getRepository('AppBundle:Game');
+        $playerRepository = $em->getRepository('AppBundle:Player');
+
+        $game = $gameRepository->find($idGame);
+        $players = $playerRepository->findPlayers($idGame);
+
+        $characteristic = new Characteristic($characteristicName);
+
+        $game->addCharacteristic($characteristic);
+
+        /** @var Player $player */
+        foreach ($players as $player){
+            $character = $player->getCharacter();
+            if ($character !== null){
                 $characteristic->setValue(0);
                 $character->addCharacteristic($characteristic);
                 $player->setCharacter($character);
             }
-
         }
-
         $em->flush();
+        return new JsonResponse(['id' => $characteristic->getId()]);
 
-        return new JsonResponse('success');
-    }
-
-    private function changeHasMax($idGame, $characteristicName, $newHasMax)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $gameRepository = $em->getRepository('AppBundle:Game');
-        $game = $gameRepository->find($idGame);
-
-        /**
-         * @var ArrayCollection
-         */
-        $characteristics = $game->getAllowedCharacteristics();
-        foreach ($characteristics as $characteristic) {
-            if ($characteristic->getName() == $characteristicName) {
-                $oldCharacteristic = $characteristic;
-                $newHasMax = ($newHasMax == 'Oui');
-                $characteristic->setHasMax($newHasMax);
-                $game->addAllowedCharacteristic($characteristic);
-                $game->removeAllowedCharacteristic($oldCharacteristic);
-                $em->flush();
-
-                return new JsonResponse("changed");
-            }
-        }
-
-        return new JsonResponse("Not changed");
-    }
-
-    private function removeCharacteristic($idGame, string $characteristicName, bool $hasMax)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $gameRepository = $em->getRepository('AppBundle:Game');
-        $playerRepository = $em->getRepository('AppBundle:Player');
-        $game = $gameRepository->find($idGame);
-
-        $characteristics = $game->getAllowedCharacteristics();
-        foreach ($characteristics as $characteristic) {
-            if ($characteristic->getName() == $characteristicName && $characteristic->getHasMax() == $hasMax) {
-                $game->removeAllowedCharacteristic($characteristic);
-                $em->remove($characteristic);
-                $em->flush();
-                return new JsonResponse("changed");
-            }
-        }
-        $players = $playerRepository->findPlayers($idGame);
-
-
-        return new JsonResponse("success");
     }
 
     private function addPlayer($idGame, $playerName)

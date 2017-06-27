@@ -3,71 +3,95 @@
  */
 let jsVars = jQuery('#js-vars').data('vars').charData;
 
-let ajaxPath = jsVars.ajaxPath;
+let ajaxPath = Routing.generate('game_edition_ajax');
 let idGame = jsVars.idGame;
-let autocompletePath = jsVars.autocompletePath;
+let autocompletePath = Routing.generate('game_edition_autocomplete');
+
+/**
+ * Ajoute un statistique
+ */
+(function () {
+    $('#statistic-body').on('click', '#new-statistic-button', function () {
+        let newStatInput = $('#new-statistic-input');
+        let newStat = newStatInput.val().trim();
+        $.post(
+            ajaxPath,
+            {
+                action: "add-statistic",
+                stat: newStat,
+                idGame: idGame
+            },
+            function (data) {
+                $('#statistic-tbody').append(`
+                    <tr id = ${data.id}>
+                        <td>${newStat}</td>
+                        <td>
+                            <select class="form-control input-xs">
+                                <option>Oui</option>
+                                <option selected >Non</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger remove-statistic"> Supprimer</button>
+                        </td>
+                    </tr>
+                `);
+                newStatInput.val('');
+            },
+            'json'
+        );
+    });
+})();
+
+/**
+ * Supprime une statistique
+ */
+(function () {
+    $('#statistic-tbody').on('click', '.remove-statistic', function () {
+        let tr = $(this).parent().parent();
+        let statId = tr.attr('id');
+        tr.remove();
+
+        $.post(
+            ajaxPath,
+            {
+                action: "remove-stat",
+                statId: statId,
+                idGame: idGame
+            },
+            function (data) {
+                console.log(data)
+            },
+            'json'
+        );
+
+    });
+})();
 
 /**
  * Ajoute une caractéristique
  */
 (function () {
-    $("#add-characteristic").click(function () {
-
-        // Si le champ de saisie de la nouvelle caractéristique est vide,
-        // on ne fait rien. Html5 affichera la nécessité de remplir ce champ.
-        let newCharacteristicName = $('#new-characteristic').val();
-        if (newCharacteristicName == '') {
-            return;
-        }
-        // Ajoute la caractéristique au tableau de la page
-        $("#allowed-characteristics").append(`
-       <tr>
-            <td class="characteristic-name"> ${newCharacteristicName} </td>
-            <td class="characteristic-has-max"> 
-                <select class = "form-control input-xs has-max">
-                    <option>Oui</option>
-                    <option selected>Non</option>
-                </select> 
-            </td>
-            <td><button type="button" class="btn btn-danger remove-characteristic">Supprimer</button></td>
-        </tr>
-       `);
-
-        // Envoie la caractéristique au serveur pour l'ajoute à la BDD
-        $.get(
-            ajaxPath,
-            {
-                action: 'add-characteristic',
-                "idGame": idGame,
-                "newCharacteristicName": newCharacteristicName
-            },
-            function (data) {
-            },
-            'json'
-        );
-    });
-
-
-})();
-
-/**
- * Modifier la valeur hasMax d'une caractéristique
- */
-(function () {
-    $('#allowed-characteristics').on('change', 'select', function (e) {
-        let newHasMax = $(this).val().trim();
-        let characteristicName = $(this).closest('tr').find(".characteristic-name").text();
-
+    $('#characteristic-body').on('click', '#new-characteristic-button', function () {
+        let newCharacteristicInput = $('#new-characteristic-input');
+        let characteristic = newCharacteristicInput.val().trim();
         $.post(
             ajaxPath,
             {
-                action: 'change-has-max',
-                "idGame": idGame,
-                "characteristicName": characteristicName,
-                "newHasMax": newHasMax
+                action: "add-characteristic",
+                idGame: idGame,
+                characteristic: characteristic
             },
             function (data) {
-                console.log(data);
+                $('#characteristic-tbody').append(`
+                    <tr id = ${data.id}>
+                        <td>${characteristic}</td>
+                        <td>
+                            <button type="button" class="btn btn-danger remove-characteristic"> Supprimer</button>
+                        </td>
+                    </tr>
+                `);
+                newCharacteristicInput.val('');
             },
             'json'
         );
@@ -77,25 +101,11 @@ let autocompletePath = jsVars.autocompletePath;
 /**
  * Supprime une caractéristique
  */
-(function () {
-    $('#allowed-characteristics').on('click', '.remove-characteristic', function (e) {
-        let characteristicName = $(this).closest('tr').find(".characteristic-name").text().trim();
-        let hasMax = $(this).closest('tr').find('.has-max').val();
-        $(this).closest('tr').remove();
+(function(){
+    $('#characteristic-tbody').on('click', '.remove-characteristic', function () {
+        let tr = $(this).parent().parent();
 
-        $.post(
-            ajaxPath,
-            {
-                action: 'remove-characteristic',
-                "idGame": idGame,
-                "characteristicName": characteristicName,
-                "hasMax": hasMax
-            },
-            function (data) {
-                console.log(data);
-            },
-            'json'
-        );
+        tr.remove();
     });
 })();
 
@@ -147,7 +157,7 @@ let autocompletePath = jsVars.autocompletePath;
                 'idGame': idGame,
                 "playerName": playerName
             },
-            function(data){
+            function (data) {
                 console.log(data);
             },
             'json'
@@ -158,8 +168,8 @@ let autocompletePath = jsVars.autocompletePath;
 /**
  * Modification de la valeur du nombre de sorts par personnage
  */
-(function(){
-    $(document).on('input','#nb-spells-max', function(){
+(function () {
+    $(document).on('input', '#nb-spells-max', function () {
         $.post(
             ajaxPath,
             {
@@ -167,7 +177,8 @@ let autocompletePath = jsVars.autocompletePath;
                 value: $(this).val(),
                 "idGame": idGame
             },
-            function(data){},
+            function (data) {
+            },
             'json'
         );
     });

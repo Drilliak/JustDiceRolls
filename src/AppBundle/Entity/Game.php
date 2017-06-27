@@ -59,9 +59,9 @@ class Game
 
     /**
      * @var int
-     * @ORM\Column(name="nb_spells_max", type="integer", options={"default":1})
+     * @ORM\Column(name="nb_spells_max", type="integer")
      */
-    private $nbSpellsMax;
+    private $nbSpellsMax = 4;
 
     /**
      * Constructor
@@ -242,7 +242,7 @@ class Game
     public function addStatistic(\AppBundle\Entity\Statistic $statistic)
     {
         $this->statistics[] = $statistic;
-
+        $statistic->setGame($this);
         return $this;
     }
 
@@ -254,6 +254,7 @@ class Game
     public function removeStatistic(\AppBundle\Entity\Statistic $statistic)
     {
         $this->statistics->removeElement($statistic);
+
     }
 
     /**

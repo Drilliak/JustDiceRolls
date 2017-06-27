@@ -24,11 +24,14 @@ class GameController extends Controller
         $level = new Statistic("Niveau");
         $gameMaster = $this->get('security.token_storage')->getToken()->getUser();
 
+        $social = new Characteristic("Social");
+        $intelligence = new Characteristic("Intelligence");
+        $force = new Characteristic("Force");
+
         $game = new Game();
         $game->setName($gameName);
-        $game->addStatistic($level);
-        $game->addStatistic($pv);
-        $game->addStatistic($mana);
+        $game->addStatistic($level);$game->addStatistic($pv);$game->addStatistic($mana);
+        $game->addCharacteristic($social);$game->addCharacteristic($intelligence);$game->addCharacteristic($force);
         $game->setGameMaster($gameMaster);
 
         $em = $this->getDoctrine()->getManager();
