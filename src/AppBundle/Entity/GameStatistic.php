@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: Vincent
- * Date: 27/06/2017
- * Time: 19:59
+ * Date: 28/06/2017
+ * Time: 18:31
  */
 
 namespace AppBundle\Entity;
@@ -12,15 +12,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class GameCharacteristic
- *
+ * Class GameStatistic
  * @package AppBundle\Entity
  *
- * @ORM\Table(name="game_characteristics")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\GameCharacteristicRepository")
+ * @ORM\Table(name="game_statistics")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\GameStatisticRepository")
  */
-class GameCharacteristic
+class GameStatistic
 {
+
     /**
      * @var int
      *
@@ -38,22 +38,31 @@ class GameCharacteristic
     private $name;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="has_max", type="boolean")
+     */
+    private $hasMax;
+
+    /**
      * @var Game
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Game", inversedBy="gameCharacteristics")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Game", inversedBy="gameStatistics")
      */
     private $game;
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Characteristic", mappedBy="gameCharacteristic", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Statistic", mappedBy="gameStatistic")
      */
-    private $characteristics;
+    private $statistics;
 
-
-    public function __construct($name){
-        $this->characteristics = new ArrayCollection();
+    public function __construct($name, bool $hasMax = false)
+    {
+        $this->statistics = new ArrayCollection();
         $this->name = $name;
+        $this->hasMax = $hasMax;
     }
+
     /**
      * Get id
      *
@@ -69,7 +78,7 @@ class GameCharacteristic
      *
      * @param string $name
      *
-     * @return GameCharacteristic
+     * @return GameStatistic
      */
     public function setName($name)
     {
@@ -93,7 +102,7 @@ class GameCharacteristic
      *
      * @param \AppBundle\Entity\Game $game
      *
-     * @return GameCharacteristic
+     * @return GameStatistic
      */
     public function setGame(\AppBundle\Entity\Game $game = null)
     {
@@ -113,36 +122,60 @@ class GameCharacteristic
     }
 
     /**
-     * Add characteristic
+     * Set hasMax
      *
-     * @param \AppBundle\Entity\Characteristic $characteristic
+     * @param boolean $hasMax
      *
-     * @return GameCharacteristic
+     * @return GameStatistic
      */
-    public function addCharacteristic(\AppBundle\Entity\Characteristic $characteristic)
+    public function setHasMax($hasMax)
     {
-        $this->characteristics[] = $characteristic;
-        $characteristic->setGameCharacteristic($this);
+        $this->hasMax = $hasMax;
+
         return $this;
     }
 
     /**
-     * Remove characteristic
+     * Get hasMax
      *
-     * @param \AppBundle\Entity\Characteristic $characteristic
+     * @return boolean
      */
-    public function removeCharacteristic(\AppBundle\Entity\Characteristic $characteristic)
+    public function getHasMax()
     {
-        $this->characteristics->removeElement($characteristic);
+        return $this->hasMax;
     }
 
     /**
-     * Get characteristics
+     * Add statistic
+     *
+     * @param \AppBundle\Entity\Statistic $statistic
+     *
+     * @return GameStatistic
+     */
+    public function addStatistic(\AppBundle\Entity\Statistic $statistic)
+    {
+        $this->statistics[] = $statistic;
+
+        return $this;
+    }
+
+    /**
+     * Remove statistic
+     *
+     * @param \AppBundle\Entity\Statistic $statistic
+     */
+    public function removeStatistic(\AppBundle\Entity\Statistic $statistic)
+    {
+        $this->statistics->removeElement($statistic);
+    }
+
+    /**
+     * Get statistics
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getCharacteristics()
+    public function getStatistics()
     {
-        return $this->characteristics;
+        return $this->statistics;
     }
 }

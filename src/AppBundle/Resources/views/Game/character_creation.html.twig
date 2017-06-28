@@ -10,56 +10,29 @@
     <div class="container">
         
         <h2 class="page-header">Création de personnage</h2>
-        {{ form_start(form, {'attr': {'name': 'create_character_form'}}) }}
+        {{ form_start(form) }}
         
         {{ form_errors(form) }}
         
+        {{ form_row(form.name) }}
+    
+        {{ form_row(form.backstory) }}
+    
+        <label class="control-label">Caractéristiques</label>
+        <div class="col-xs-offset-1"><i>Votre maître du jeu vous accorde X points à répartir parmi les caractéristiques ci-dessus,
+                en veuillant à ne pas dépasser un maximum de Y par compétence</i></div>
+        <ul class="list-unstyled">
+            {# iterate over each existing tag and render its only field: name #}
+            {% for characteristic in form.characteristics %}
+                <li class="col-xs-offset-1">{{ form_row(characteristic.value) }}</li>
+            {% endfor %}
+        </ul>
+    
+        {{ form_widget(form.token) }}
         
-        <div class="form-group row">
-            <div class="col-lg-3">
-                {{ form_label(form.name, "Nom du personnage", {'label_attr': {'class': 'col-2 col-form-label'}}) }}
-                
-                {{ form_errors(form.name) }}
-                
-                
-                {{ form_widget(form.name, {'attr':
-                    {
-                        'class': 'form-control'
-                    }
-                }) }}
-            </div>
-        
-        
-        </div>
-        
-        <div class="form-group row">
-            <div class="col-lg-6">
-                {{ form_label(form.backstory, "Histoire", {'label_attr': {'class': 'control-label'}}) }}
-                
-                {{ form_errors(form.backstory) }}
-                
-                
-                {{ form_widget(form.backstory, {'attr':
-                    {
-                        'class': 'form-control'
-                    }
-                }) }}
-            </div>
-        
-        
-        </div>
-        
-
-       {{ form_row(form.token) }}
+        {{ form_row(form.save) }}
         
         {{ form_rest(form) }}
-    
-        <div class="row">
-            {{ form_widget(form.save,
-            {   'attr': {'class': 'btn'},
-                'label':'Créer'}) }}
-    
-        </div>
         
         {{ form_end(form) }}
     

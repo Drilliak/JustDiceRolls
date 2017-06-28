@@ -28,20 +28,6 @@ class Statistic
     private $id;
 
     /**
-     * @var string
-     * @ORM\Column(name="name", type="string", length=255)
-     */
-    private $name;
-
-    /**
-     * @var PlayerCharacter
-     *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PlayerCharacter", inversedBy="statistics")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $playerCharacter;
-
-    /**
      * @var float
      *
      * @ORM\Column(name="value", type="float")
@@ -49,31 +35,27 @@ class Statistic
     private $value;
 
     /**
-     * @var bool
-     *
-     * @ORM\Column(name="has_max", type="boolean")
-     */
-    private $hasMax;
-
-    /**
      * @var float
      *
-     * @ORM\Column(name="max_value", type="float", nullable=true)
+     * @ORM\Column(name="value_max", type="float", nullable=true)
      */
-    private $maxValue;
+    private $valueMax;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Game", inversedBy="statistics")
-     * @ORM\JoinColumn(name="game_id", referencedColumnName="id")
+     * @var GameStatistic
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\GameStatistic", inversedBy="statistics")
      */
-    private $game;
+    private $gameStatistic;
 
-    public function __construct($name, bool $hasMax = false)
-    {
-        $this->name = $name;
-        $this->hasMax = $hasMax;
-        $this->value = 0;
-    }
+    /**
+     * @var PlayerCharacter
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PlayerCharacter", inversedBy="statistics")
+     */
+    private $character;
+
+
 
     /**
      * Get id
@@ -83,30 +65,6 @@ class Statistic
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return Statistic
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 
     /**
@@ -133,99 +91,76 @@ class Statistic
         return $this->value;
     }
 
+
     /**
-     * Set hasMax
+     * Set valueMax
      *
-     * @param boolean $hasMax
+     * @param float $valueMax
      *
      * @return Statistic
      */
-    public function setHasMax($hasMax)
+    public function setValueMax($valueMax)
     {
-        $this->hasMax = $hasMax;
+        $this->valueMax = $valueMax;
 
         return $this;
     }
 
     /**
-     * Get hasMax
-     *
-     * @return boolean
-     */
-    public function getHasMax()
-    {
-        return $this->hasMax;
-    }
-
-    /**
-     * Set maxValue
-     *
-     * @param float $maxValue
-     *
-     * @return Statistic
-     */
-    public function setMaxValue($maxValue)
-    {
-        $this->maxValue = $maxValue;
-
-        return $this;
-    }
-
-    /**
-     * Get maxValue
+     * Get valueMax
      *
      * @return float
      */
-    public function getMaxValue()
+    public function getValueMax()
     {
-        return $this->maxValue;
+        return $this->valueMax;
     }
 
     /**
-     * Set playerCharacter
+     * Set gameStatistic
      *
-     * @param \AppBundle\Entity\PlayerCharacter $playerCharacter
+     * @param \AppBundle\Entity\GameStatistic $gameStatistic
      *
      * @return Statistic
      */
-    public function setPlayerCharacter(\AppBundle\Entity\PlayerCharacter $playerCharacter = null)
+    public function setGameStatistic(\AppBundle\Entity\GameStatistic $gameStatistic = null)
     {
-        $this->playerCharacter = $playerCharacter;
+        $this->gameStatistic = $gameStatistic;
 
         return $this;
     }
 
     /**
-     * Get playerCharacter
+     * Get gameStatistic
+     *
+     * @return \AppBundle\Entity\GameStatistic
+     */
+    public function getGameStatistic()
+    {
+        return $this->gameStatistic;
+    }
+
+    /**
+     * Set character
+     *
+     * @param \AppBundle\Entity\PlayerCharacter $character
+     *
+     * @return Statistic
+     */
+    public function setCharacter(\AppBundle\Entity\PlayerCharacter $character = null)
+    {
+        $this->character = $character;
+
+        return $this;
+    }
+
+    /**
+     * Get character
      *
      * @return \AppBundle\Entity\PlayerCharacter
      */
-    public function getPlayerCharacter()
+    public function getCharacter()
     {
-        return $this->playerCharacter;
-    }
-
-    /**
-     * Set game
-     *
-     * @param \AppBundle\Entity\Game $game
-     *
-     * @return Statistic
-     */
-    public function setGame(\AppBundle\Entity\Game $game = null)
-    {
-        $this->game = $game;
-
-        return $this;
-    }
-
-    /**
-     * Get game
-     *
-     * @return \AppBundle\Entity\Game
-     */
-    public function getGame()
-    {
-        return $this->game;
+        return $this->character;
     }
 }

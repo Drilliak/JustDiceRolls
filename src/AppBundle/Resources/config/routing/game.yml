@@ -20,4 +20,4 @@ game_create:
     path: /creation-partie
     defaults:
         _controller: AppBundle:Game:createNewGame
-    methods: [GET]
+    methods: [POST]

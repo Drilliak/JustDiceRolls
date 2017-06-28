@@ -32,7 +32,7 @@ class Characteristic
     /**
      * @var GameCharacteristic
      * 
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\GameCharacteristic")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\GameCharacteristic", inversedBy="characteristics")
      */
     private $gameCharacteristic;
 

@@ -6,18 +6,13 @@
     <div class="container">
         <fieldset>
             <legend>Nouvelle partie</legend>
-            <form class="row" method="get" action="{{ path('game_create') }}">
-                <div class="form-group col-xs-6 col-sm-3 col-lg-2 ">
-                    <input type="text" class="form-control" name="game-name" placeholder="Nom de la partie" required>
-                </div>
-                <button type="submit" class="btn btn-default col-xs-6 col-sm-3 col-lg-2">Créer la partie</button>
-            </form>
+            {{ form_start(form, {'attr': {'class' : 'form-inline'}}) }}
+            {{ form_end(form) }}
         </fieldset>
-
+    
     </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script>console.log(Routing.generate('show_games_as_player'));</script>
 {% endblock %}

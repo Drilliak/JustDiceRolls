@@ -41,14 +41,14 @@ class PlayerCharacter
     /**
      * @var array
      *
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Characteristic", mappedBy="playerCharacter")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Characteristic", mappedBy="playerCharacter", cascade={"persist", "remove"})
      */
     private $characteristics;
 
     /**
      * @var array
      *
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Statistic", mappedBy="playerCharacter")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Statistic", mappedBy="character", cascade={"persist", "remove"})
      *
      */
     private $statistics;
@@ -250,30 +250,6 @@ class PlayerCharacter
     }
 
     /**
-     * Set nbSpells
-     *
-     * @param integer $nbSpells
-     *
-     * @return PlayerCharacter
-     */
-    public function setNbSpells($nbSpells)
-    {
-        $this->nbSpells = $nbSpells;
-
-        return $this;
-    }
-
-    /**
-     * Get nbSpells
-     *
-     * @return integer
-     */
-    public function getNbSpells()
-    {
-        return $this->nbSpells;
-    }
-
-    /**
      * Set nbSpellsMax
      *
      * @param integer $nbSpellsMax
@@ -307,7 +283,7 @@ class PlayerCharacter
     public function addStatistic(\AppBundle\Entity\Statistic $statistic)
     {
         $this->statistics[] = $statistic;
-        $statistic->setPlayerCharacter($this);
+        $statistic->setCharacter($this);
         return $this;
     }
 

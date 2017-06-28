@@ -14,6 +14,24 @@ let autocompletePath = Routing.generate('game_edition_autocomplete');
     $('#statistic-body').on('click', '#new-statistic-button', function () {
         let newStatInput = $('#new-statistic-input');
         let newStat = newStatInput.val().trim();
+        let tempId = "temp-" + Math.floor(Math.random() * (1000));
+
+        $('#statistic-tbody').append(`
+            <tr id="${tempId}">
+                <td>${newStat}</td>
+                <td>
+                    <select class="form-control input-xs">
+                        <option>Oui</option>
+                        <option selected >Non</option>
+                    </select>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger remove-statistic"> Supprimer</button>
+                </td>
+            </tr>
+        `);
+        newStatInput.val('');
+
         $.post(
             ajaxPath,
             {
@@ -22,21 +40,7 @@ let autocompletePath = Routing.generate('game_edition_autocomplete');
                 idGame: idGame
             },
             function (data) {
-                $('#statistic-tbody').append(`
-                    <tr id = ${data.id}>
-                        <td>${newStat}</td>
-                        <td>
-                            <select class="form-control input-xs">
-                                <option>Oui</option>
-                                <option selected >Non</option>
-                            </select>
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-danger remove-statistic"> Supprimer</button>
-                        </td>
-                    </tr>
-                `);
-                newStatInput.val('');
+                $(`#${tempId}`).attr('id', data.id);
             },
             'json'
         );
@@ -60,7 +64,6 @@ let autocompletePath = Routing.generate('game_edition_autocomplete');
                 idGame: idGame
             },
             function (data) {
-                console.log(data)
             },
             'json'
         );
@@ -75,37 +78,53 @@ let autocompletePath = Routing.generate('game_edition_autocomplete');
     $('#characteristic-body').on('click', '#new-characteristic-button', function () {
         let newCharacteristicInput = $('#new-characteristic-input');
         let characteristic = newCharacteristicInput.val().trim();
+        let tempId = "temp-" + Math.floor(Math.random() * (1000));
+        $('#characteristic-tbody').append(`
+            <tr id="${tempId}">
+                <td>${characteristic}</td>
+                <td>
+                    <button type="button" class="btn btn-danger remove-characteristic"> Supprimer</button>
+                </td>
+            </tr>
+        `);
+        newCharacteristicInput.val('');
         $.post(
-            ajaxPath,
+          ajaxPath,
             {
                 action: "add-characteristic",
-                idGame: idGame,
-                characteristic: characteristic
+                characteristic: characteristic,
+                idGame: idGame
             },
-            function (data) {
-                $('#characteristic-tbody').append(`
-                    <tr id = ${data.id}>
-                        <td>${characteristic}</td>
-                        <td>
-                            <button type="button" class="btn btn-danger remove-characteristic"> Supprimer</button>
-                        </td>
-                    </tr>
-                `);
-                newCharacteristicInput.val('');
+            function(data){
+              $(`#${tempId}`).attr('id', data.id);
             },
             'json'
         );
+
     });
 })();
 
 /**
  * Supprime une caractéristique
  */
-(function(){
+(function () {
     $('#characteristic-tbody').on('click', '.remove-characteristic', function () {
         let tr = $(this).parent().parent();
+        let trId = tr.attr('id');
 
         tr.remove();
+        $.post(
+          ajaxPath,
+            {
+                action: "remove-characteristic",
+                characteristicId: trId,
+                idGame: idGame
+            },
+            function(data){
+
+            },
+            'json'
+        );
     });
 })();
 

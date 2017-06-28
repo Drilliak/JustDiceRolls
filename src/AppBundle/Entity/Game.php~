@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use UserBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Game
@@ -23,20 +24,10 @@ class Game
      */
     private $id;
 
-
-    /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Characteristic", mappedBy="game", cascade={"persist"})
-     */
-    private $characteristics;
-
-    /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Statistic", mappedBy="game", cascade={"persist"})
-     */
-    private $statistics;
-
     /**
      * @var string
      * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $name;
 
@@ -59,16 +50,27 @@ class Game
 
     /**
      * @var int
-     * @ORM\Column(name="nb_spells_max", type="integer", options={"default":1})
+     * @ORM\Column(name="nb_spells_max", type="integer")
      */
-    private $nbSpellsMax;
+    private $nbSpellsMax = 4;
+
+    /**
+     * @var array
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\GameCharacteristic", mappedBy="game", cascade={"persist", "remove"})
+     */
+    private $gameCharacteristics;
+
+    /**
+     * @var array
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\GameStatistic", mappedBy="game", cascade={"persist", "remove"})
+     */
+    private $gameStatistics;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->characteristics = new ArrayCollection();
         $this->players = new ArrayCollection();
     }
 
@@ -103,58 +105,6 @@ class Game
     {
         $this->gameMaster = $gameMaster;
     }
-
-    /**
-     * Set allowedCharacteristics
-     *
-     * @param array $allowedCharacteristics
-     *
-     * @return Game
-     */
-    public function setAllowedCharacteristics($allowedCharacteristics)
-    {
-        $this->allowedCharacteristics = $allowedCharacteristics;
-
-        return $this;
-    }
-
-    /**
-     * Get allowedCharacteristics
-     *
-     * @return array
-     */
-    public function getAllowedCharacteristics()
-    {
-        return $this->allowedCharacteristics;
-    }
-
-
-    /**
-     * Add allowedCharacteristic
-     *
-     * @param \AppBundle\Entity\Characteristic $allowedCharacteristic
-     *
-     * @return Game
-     */
-    public function addAllowedCharacteristic(Characteristic $allowedCharacteristic)
-    {
-        $this->allowedCharacteristics[] = $allowedCharacteristic;
-
-        $allowedCharacteristic->setGame($this);
-
-        return $this;
-    }
-
-    /**
-     * Remove allowedCharacteristic
-     *
-     * @param \AppBundle\Entity\Characteristic $allowedCharacteristic
-     */
-    public function removeAllowedCharacteristic(Characteristic $allowedCharacteristic)
-    {
-        $this->allowedCharacteristics->removeElement($allowedCharacteristic);
-    }
-
 
 
     /**
@@ -250,71 +200,39 @@ class Game
         return $this->nbSpellsMax;
     }
 
+
     /**
-     * Add characteristic
+     * Add gameCharacteristic
      *
-     * @param \AppBundle\Entity\Characteristic $characteristic
+     * @param \AppBundle\Entity\GameCharacteristic $gameCharacteristic
      *
      * @return Game
      */
-    public function addCharacteristic(\AppBundle\Entity\Characteristic $characteristic)
+    public function addGameCharacteristic(\AppBundle\Entity\GameCharacteristic $gameCharacteristic)
     {
-        $this->characteristics[] = $characteristic;
-
+        $this->gameCharacteristics[] = $gameCharacteristic;
+        $gameCharacteristic->setGame($this);
         return $this;
     }
 
     /**
-     * Remove characteristic
+     * Remove gameCharacteristic
      *
-     * @param \AppBundle\Entity\Characteristic $characteristic
+     * @param \AppBundle\Entity\GameCharacteristic $gameCharacteristic
      */
-    public function removeCharacteristic(\AppBundle\Entity\Characteristic $characteristic)
+    public function removeGameCharacteristic(\AppBundle\Entity\GameCharacteristic $gameCharacteristic)
     {
-        $this->characteristics->removeElement($characteristic);
+        $this->gameCharacteristics->removeElement($gameCharacteristic);
+        $gameCharacteristic->setGame(null);
     }
 
     /**
-     * Get characteristics
+     * Get gameCharacteristics
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getCharacteristics()
+    public function getGameCharacteristics()
     {
-        return $this->characteristics;
-    }
-
-    /**
-     * Add statistic
-     *
-     * @param \AppBundle\Entity\Statistic $statistic
-     *
-     * @return Game
-     */
-    public function addStatistic(\AppBundle\Entity\Statistic $statistic)
-    {
-        $this->statistics[] = $statistic;
-
-        return $this;
-    }
-
-    /**
-     * Remove statistic
-     *
-     * @param \AppBundle\Entity\Statistic $statistic
-     */
-    public function removeStatistic(\AppBundle\Entity\Statistic $statistic)
-    {
-        $this->statistics->removeElement($statistic);
-    }
-
-    /**
-     * Get statistics
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getStatistics()
-    {
-        return $this->statistics;
+        return $this->gameCharacteristics;
     }
 }

@@ -4,6 +4,7 @@ namespace AppBundle\Form;
 
 use AppBundle\Entity\PlayerCharacter;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -17,10 +18,16 @@ class PlayerCharacterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', TextType::class)
-            ->add('backstory', TextareaType::class, ['required' => false])
-            ->add('save', SubmitType::class)
-            ->add('token', FileType::class, ['label' => 'Image token']);
+            ->add('name', TextType::class, ['label' => 'Nom'])
+            ->add('backstory', TextareaType::class, ['required' => false, 'label' => "Histoire"])
+            ->add('characteristics', CollectionType::class,
+                ['entry_type'   => CharacteristicType::class,
+                 'allow_add'    => false, 'allow_delete' => true,
+                 'by_reference' => false,
+                 'label'        => "Charactéristiques"])
+            ->add('token', FileType::class, ['label' => 'Image token'])
+            ->add('save', SubmitType::class, ['label' => 'Créer']);
+
     }
 
     public function configureOptions(OptionsResolver $resolver)

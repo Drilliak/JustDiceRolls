@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use UserBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Game
@@ -26,6 +27,7 @@ class Game
     /**
      * @var string
      * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $name;
 
@@ -54,16 +56,21 @@ class Game
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\GameCharacteristic", mappedBy="game")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\GameCharacteristic", mappedBy="game", cascade={"persist", "remove"})
      */
     private $gameCharacteristics;
+
+    /**
+     * @var array
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\GameStatistic", mappedBy="game", cascade={"persist", "remove"})
+     */
+    private $gameStatistics;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->characteristics = new ArrayCollection();
         $this->players = new ArrayCollection();
     }
 
@@ -193,72 +200,74 @@ class Game
         return $this->nbSpellsMax;
     }
 
+
     /**
-     * Add characteristic
+     * Add gameCharacteristic
      *
-     * @param \AppBundle\Entity\Characteristic $characteristic
+     * @param \AppBundle\Entity\GameCharacteristic $gameCharacteristic
      *
      * @return Game
      */
-    public function addCharacteristic(\AppBundle\Entity\Characteristic $characteristic)
+    public function addGameCharacteristic(\AppBundle\Entity\GameCharacteristic $gameCharacteristic)
     {
-        $this->characteristics[] = $characteristic;
-        $characteristic->setGame($this);
+        $this->gameCharacteristics[] = $gameCharacteristic;
+        $gameCharacteristic->setGame($this);
         return $this;
     }
 
     /**
-     * Remove characteristic
+     * Remove gameCharacteristic
      *
-     * @param \AppBundle\Entity\Characteristic $characteristic
+     * @param \AppBundle\Entity\GameCharacteristic $gameCharacteristic
      */
-    public function removeCharacteristic(\AppBundle\Entity\Characteristic $characteristic)
+    public function removeGameCharacteristic(\AppBundle\Entity\GameCharacteristic $gameCharacteristic)
     {
-        $this->characteristics->removeElement($characteristic);
+        $this->gameCharacteristics->removeElement($gameCharacteristic);
+        $gameCharacteristic->setGame(null);
     }
 
     /**
-     * Get characteristics
+     * Get gameCharacteristics
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getCharacteristics()
+    public function getGameCharacteristics()
     {
-        return $this->characteristics;
+        return $this->gameCharacteristics;
     }
 
     /**
-     * Add statistic
+     * Add gameStatistic
      *
-     * @param \AppBundle\Entity\Statistic $statistic
+     * @param \AppBundle\Entity\GameStatistic $gameStatistic
      *
      * @return Game
      */
-    public function addStatistic(\AppBundle\Entity\Statistic $statistic)
+    public function addGameStatistic(\AppBundle\Entity\GameStatistic $gameStatistic)
     {
-        $this->statistics[] = $statistic;
-        $statistic->setGame($this);
+        $this->gameStatistics[] = $gameStatistic;
+        $gameStatistic->setGame($this);
         return $this;
     }
 
     /**
-     * Remove statistic
+     * Remove gameStatistic
      *
-     * @param \AppBundle\Entity\Statistic $statistic
+     * @param \AppBundle\Entity\GameStatistic $gameStatistic
      */
-    public function removeStatistic(\AppBundle\Entity\Statistic $statistic)
+    public function removeGameStatistic(\AppBundle\Entity\GameStatistic $gameStatistic)
     {
-        $this->statistics->removeElement($statistic);
-
+        $this->gameStatistics->removeElement($gameStatistic);
+        $gameStatistic->setGame(null);
     }
 
     /**
-     * Get statistics
+     * Get gameStatistics
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getStatistics()
+    public function getGameStatistics()
     {
-        return $this->statistics;
+        return $this->gameStatistics;
     }
 }

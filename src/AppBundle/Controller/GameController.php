@@ -3,47 +3,20 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Characteristic;
-use AppBundle\Entity\Game;
+use AppBundle\Entity\GameCharacteristic;
+use AppBundle\Entity\GameStatistic;
 use AppBundle\Entity\Player;
 use AppBundle\Entity\PlayerCharacter;
 use AppBundle\Entity\Statistic;
-use AppBundle\Form\PlayerCharacterType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Form\PlayerCharacterType;
+
 
 
 class GameController extends Controller
 {
-
-    public function createNewGameAction(Request $request)
-    {
-        $gameName = $request->get('game-name');
-        $pv = new Statistic("PV", true);
-        $mana = new Statistic("Mana", true);
-        $level = new Statistic("Niveau");
-        $gameMaster = $this->get('security.token_storage')->getToken()->getUser();
-
-        $social = new Characteristic("Social");
-        $intelligence = new Characteristic("Intelligence");
-        $force = new Characteristic("Force");
-
-        $game = new Game();
-        $game->setName($gameName);
-        $game->addStatistic($level);$game->addStatistic($pv);$game->addStatistic($mana);
-        $game->addCharacteristic($social);$game->addCharacteristic($intelligence);$game->addCharacteristic($force);
-        $game->setGameMaster($gameMaster);
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($game);
-        $em->flush();
-        $idGame = $game->getId();
-        $this->addFlash('info', 'Nouvelle partie créée, vous pouvez désormais la personnaliser');
-
-        return $this->redirectToRoute('game_edition', ['idGame' => $idGame]);
-
-    }
-
 
 
     public function createCharacterAction(Request $request, $idGame){
@@ -63,9 +36,20 @@ class GameController extends Controller
             return $this->redirectToRoute('homepage');
         }
 
+
         $playerCharacter = new PlayerCharacter();
 
-        $form = $this->get('form.factory')->create(PlayerCharacterType::class, $playerCharacter);
+        $gameCharacteristics = $game->getGameCharacteristics();
+
+        /** @var GameCharacteristic $gameCharacteristic */
+        foreach ($gameCharacteristics as $gameCharacteristic){
+            $characteristic = new Characteristic();
+            $characteristic->setGameCharacteristic($gameCharacteristic);
+            $playerCharacter->addCharacteristic($characteristic);
+        }
+
+        $form = $this->createForm(PlayerCharacterType::class, $playerCharacter);
+
 
         $form->handleRequest($request);
 
@@ -81,15 +65,21 @@ class GameController extends Controller
 
             $playerCharacter->setToken($fileName);
 
-            $allowedCharacteristics = $game->getAllowedCharacteristics();
-            /** @var Characteristic $allowedCharacteristic */
-            foreach($allowedCharacteristics as $allowedCharacteristic){
-                if ($allowedCharacteristic->getHasMax()){
-                    $allowedCharacteristic->setMaxValue(0);
+            $gameStatistics = $game->getGameStatistics();
+
+            /** @var GameStatistic $gameStatistic */
+            foreach ($gameStatistics as $gameStatistic){
+                $statistic = new Statistic();
+                $statistic->setGameStatistic($gameStatistic);
+                $statistic->setValue(0);
+                if ($gameStatistic->getHasMax()){
+                    $statistic->setValueMax(0);
                 }
-                $allowedCharacteristic->setValue(0);
-                $playerCharacter->addCharacteristic($allowedCharacteristic);
+                $playerCharacter->addStatistic($statistic);
             }
+
+
+            $playerCharacter->setNbSpellsMax($game->getNbSpellsMax());
 
             $player->setCharacter($playerCharacter);
 

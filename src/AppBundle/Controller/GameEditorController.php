@@ -3,9 +3,10 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\GameCharacteristic;
+use AppBundle\Entity\GameStatistic;
 use AppBundle\Entity\Player;
 use AppBundle\Entity\Statistic;
-use AppBundle\Entity\Characteristic;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -46,8 +47,8 @@ class GameEditorController extends Controller
                 "idGame"          => $idGame,
                 "nbSpellsMax"     => $game->getNbSpellsMax(),
                 "players"         => $game->getPlayers(),
-                "statistics"      => $game->getStatistics(),
-                "characteristics" => $game->getCharacteristics()
+                "characteristics" => $game->getGameCharacteristics(),
+                "statistics" => $game->getGameStatistics(),
             ]
         );
     }
@@ -78,6 +79,9 @@ class GameEditorController extends Controller
             case "add-characteristic":
                 $characteristic = $request->get('characteristic');
                 return $this->addCharacteristic($idGame, $characteristic);
+            case "remove-characteristic":
+                $characteristicId = $request->get('characteristicId');
+                return $this->removeCharacteristic($idGame, $characteristicId);
             case "add-player":
                 $playerName = $request->get('playerName');
                 return $this->addPlayer($idGame, $playerName);
@@ -98,27 +102,15 @@ class GameEditorController extends Controller
         $statName = trim(strip_tags($statName));
         $em = $this->getDoctrine()->getManager();
         $gameRepository = $em->getRepository('AppBundle:Game');
-        $playerRepository = $em->getRepository('AppBundle:Player');
+
+        $gameStatistic = new GameStatistic($statName);
 
         $game = $gameRepository->find($idGame);
-        $players = $playerRepository->findPlayers($idGame);
+        $game->addGameStatistic($gameStatistic);
 
-        $stat = new Statistic($statName);
-
-        $game->addStatistic($stat);
-        /** @var Player $player */
-        foreach ($players as $player){
-            $character = $player->getCharacter();
-            if ($character !== null){
-                $stat->setHasMax(false);
-                $stat->setValue(0);
-                $character->addStatistic($stat);
-                $player->setCharacter($character);
-            }
-        }
         $em->flush();
 
-        return new JsonResponse(['id' => $stat->getId()]);
+        return new JsonResponse(['id' => $gameStatistic->getId(), 'message' => "Statistic added."]);
 
     }
 
@@ -126,62 +118,49 @@ class GameEditorController extends Controller
         $statId = (int) strip_tags($statId);
         $em = $this->getDoctrine()->getManager();
         $gameRepository = $em->getRepository('AppBundle:Game');
-        $playerRepository = $em->getRepository('AppBundle:Player');
-        $statRepository = $em->getRepository('AppBundle:Statistic');
+        $gameStatRepo = $em->getRepository('AppBundle:GameStatistic');
 
         $game = $gameRepository->find($idGame);
-        $players = $playerRepository->findPlayers($idGame);
-        $stat = $statRepository->find($statId);
-
-        $game->removeStatistic($stat);
-        /** @var Player $player */
-        foreach($players as $player){
-            $character = $player->getCharacter();
-            if ($character !== null){
-                /** @var Statistic $statistic */
-                foreach($character->getStatistics() as $statistic){
-                    if (strcasecmp($statistic->getName(), $stat->getName()) == 0){
-                        $character->removeStatistic($statistic);
-                        $player->setCharacter($character);
-                        break;
-                    }
-                }
-            }
-        }
-        $em->remove($stat);
+        $gameStat = $gameStatRepo->find($statId);
+        $game->removeGameStatistic($gameStat);
+        $em->remove($gameStat);
         $em->flush();
 
-        $name = $stat->getName();
-        return new JsonResponse("Statistic $name removed");
+        $name = $gameStat->getName();
+        return new JsonResponse(['message' => "Game statistic $name removed"]);
 
     }
 
     private function addCharacteristic($idGame, $characteristicName){
-        $characteristicName= trim(strip_tags($characteristicName));
+        $characteristicName = trim(strip_tags($characteristicName));
 
         $em = $this->getDoctrine()->getManager();
         $gameRepository = $em->getRepository('AppBundle:Game');
-        $playerRepository = $em->getRepository('AppBundle:Player');
+
+        $gameCharacteristic = new GameCharacteristic($characteristicName);
+        $game = $gameRepository->find($idGame);
+        $game->addGameCharacteristic($gameCharacteristic);
+
+        $em->flush();
+        return new JsonResponse(['id' => $gameCharacteristic->getId(), 'message' => 'Game characteristic added.']);
+
+    }
+
+    private function removeCharacteristic($idGame, $characteristicId){
+        $characteristicId = (int) trim(strip_tags($characteristicId));
+
+        $em = $this->getDoctrine()->getManager();
+        $gameRepository = $em->getRepository('AppBundle:Game');
+        $gameCharRepository = $em->getRepository('AppBundle:GameCharacteristic');
 
         $game = $gameRepository->find($idGame);
-        $players = $playerRepository->findPlayers($idGame);
-
-        $characteristic = new Characteristic($characteristicName);
-
-        $game->addCharacteristic($characteristic);
-
-        /** @var Player $player */
-        foreach ($players as $player){
-            $character = $player->getCharacter();
-            if ($character !== null){
-                $characteristic->setValue(0);
-                $character->addCharacteristic($characteristic);
-                $player->setCharacter($character);
-            }
-        }
+        $gameCharacteristic = $gameCharRepository->find($characteristicId);
+        $game->removeGameCharacteristic($gameCharacteristic);
+        $em->remove($gameCharacteristic);
         $em->flush();
-        return new JsonResponse(['id' => $characteristic->getId()]);
 
+        $name = $gameCharacteristic->getName();
+        return new JsonResponse(['message' => "Game characteristic $name removed."]);
     }
 
     private function addPlayer($idGame, $playerName)
