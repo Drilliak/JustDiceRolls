@@ -36,6 +36,11 @@ class GameCharacteristic
      */
     private $name;
 
+    /**
+     * @var Game
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Game", inversedBy="gameCharacteristics")
+     */
+    private $game;
 
     /**
      * Get id
@@ -52,7 +57,7 @@ class GameCharacteristic
      *
      * @param string $name
      *
-     * @return GameCharacteristic
+     * @return GameCharacteristi
      */
     public function setName($name)
     {

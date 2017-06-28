@@ -20,21 +20,21 @@ class Characteristic
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255)
-     */
-    private $name;
-
-
+    
+    
     /**
      * @var float
      *
      * @ORM\Column(name="value", type="float")
      */
     private $value;
+
+    /**
+     * @var GameCharacteristic
+     * 
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\GameCharacteristic")
+     */
+    private $gameCharacteristic;
 
 
     /**
@@ -45,18 +45,16 @@ class Characteristic
      */
     private $playerCharacter;
 
+    public function __construct()
+    {
+        $this->value = 0;
+    }
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Game", inversedBy="characteristics")
-     * @ORM\JoinColumn(name="game_id", referencedColumnName="id")
+     * @return string
      */
-    private $game;
-
-
-    public function __construct($name)
-    {
-        $this->name = $name;
-        $this->value = 0;
+    public function getName() : string {
+        return $this->gameCharacteristic->getName();
     }
 
     /**
@@ -67,30 +65,6 @@ class Characteristic
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return Characteristic
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 
     /**
@@ -118,6 +92,30 @@ class Characteristic
     }
 
     /**
+     * Set gameCharacteristic
+     *
+     * @param \AppBundle\Entity\GameCharacteristic $gameCharacteristic
+     *
+     * @return Characteristic
+     */
+    public function setGameCharacteristic(\AppBundle\Entity\GameCharacteristic $gameCharacteristic = null)
+    {
+        $this->gameCharacteristic = $gameCharacteristic;
+
+        return $this;
+    }
+
+    /**
+     * Get gameCharacteristic
+     *
+     * @return \AppBundle\Entity\GameCharacteristic
+     */
+    public function getGameCharacteristic()
+    {
+        return $this->gameCharacteristic;
+    }
+
+    /**
      * Set playerCharacter
      *
      * @param \AppBundle\Entity\PlayerCharacter $playerCharacter
@@ -139,29 +137,5 @@ class Characteristic
     public function getPlayerCharacter()
     {
         return $this->playerCharacter;
-    }
-
-    /**
-     * Set game
-     *
-     * @param \AppBundle\Entity\Game $game
-     *
-     * @return Characteristic
-     */
-    public function setGame(\AppBundle\Entity\Game $game = null)
-    {
-        $this->game = $game;
-
-        return $this;
-    }
-
-    /**
-     * Get game
-     *
-     * @return \AppBundle\Entity\Game
-     */
-    public function getGame()
-    {
-        return $this->game;
     }
 }

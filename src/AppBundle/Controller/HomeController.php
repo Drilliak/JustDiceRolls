@@ -11,4 +11,8 @@ class HomeController extends Controller
 
         return $this->render("AppBundle:Home:index.html.twig");
     }
+
+    public function testAction(){
+        die('ici');
+    }
 }

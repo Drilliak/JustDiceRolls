@@ -16,5 +16,10 @@ homepage:
         _controller: AppBundle:Home:index
     methods: [GET]
 
+test:
+    path: /test
+    defaults:
+        _controller: AppBundle:Home:test
+
 
 

@@ -23,17 +23,6 @@ class Game
      */
     private $id;
 
-
-    /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Characteristic", mappedBy="game", cascade={"persist"})
-     */
-    private $characteristics;
-
-    /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Statistic", mappedBy="game", cascade={"persist"})
-     */
-    private $statistics;
-
     /**
      * @var string
      * @ORM\Column(name="name", type="string", length=255)
@@ -62,6 +51,12 @@ class Game
      * @ORM\Column(name="nb_spells_max", type="integer")
      */
     private $nbSpellsMax = 4;
+
+    /**
+     * @var array
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\GameCharacteristic", mappedBy="game")
+     */
+    private $gameCharacteristics;
 
     /**
      * Constructor

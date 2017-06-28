@@ -20,21 +20,21 @@ class Characteristic
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255)
-     */
-    private $name;
-
-
+    
+    
     /**
      * @var float
      *
      * @ORM\Column(name="value", type="float")
      */
     private $value;
+
+    /**
+     * @var GameCharacteristic
+     * 
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\GameCharacteristic")
+     */
+    private $gameCharacteristic;
 
 
     /**
@@ -45,12 +45,18 @@ class Characteristic
      */
     private $playerCharacter;
 
+    public function __construct()
+    {
+        $this->value = 0;
+    }
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Game", inversedBy="characteristics")
-     * @ORM\JoinColumn(name="game_id", referencedColumnName="id")
+     * @return string
      */
-    private $game;
+    public function getName() : string {
+        return $this->gameCharacteristic->getName();
+    }
+
 
 
 }

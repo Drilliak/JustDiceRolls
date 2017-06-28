@@ -41,10 +41,7 @@ class PlayerCharacter
     /**
      * @var array
      *
-     *
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Characteristic", mappedBy="playerCharacter")
-     * @ORM\OrderBy({"hasMax" = "DESC"})
-     *
      */
     private $characteristics;
 
