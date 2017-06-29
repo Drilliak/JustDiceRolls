@@ -1,11 +1,3 @@
-{# tableau des caractéristiques canoniques (permet de garder l'odre pour garder
-une cohérence dans l'affichage #}
-{% set canonicalAllowedCharacteristics = [] %}
-
-{% for allowedCharacteristic in allowedCharacteristics %}
-    {% set canonicalAllowedCharacteristics = canonicalAllowedCharacteristics|merge([formatName(allowedCharacteristic)]) %}
-{% endfor %}
-
 {% extends "AppBundle::base.html.twig" %}
 
 {% block title %}{{ gameName }} - Maître du jeu {% endblock %}
@@ -25,7 +17,7 @@ une cohérence dans l'affichage #}
 {% block content %}
     <div class="container">
         <div class="row">
-
+            
             <a class="pull-right btn btn-default" data-toggle="tooltip"
                title="Éditer la configuration de la partie" href="{{ path('game_edition', {'idGame': gameId}) }}"><span
                         class="glyphicon glyphicon-cog"></span></a>
@@ -37,52 +29,43 @@ une cohérence dans l'affichage #}
                 <ul id="hidden-characteristics" class="dropdown-menu"></ul>
             </div>
         </div>
-
+        
         <table class="table table-striped">
             <thead>
             <tr class="header">
                 <th class="user">Utilisateur</th>
                 <th class="character">Personnage</th>
-                {% for allowedCharacteristic in allowedCharacteristics %}
-                    <th class="{{ formatName(allowedCharacteristic) }}">
-                        {{ allowedCharacteristic }}
-                        <span class="glyphicon glyphicon-eye-close pull-right"></span>
-                    </th>
+                {% for gameStatistic in gameStatistics %}
+                    <th class="{{ formatName(gameStatistic.name) }}">{{ gameStatistic.name }}</th>
                 {% endfor %}
             </tr>
             </thead>
-            <tbody>
+            
+            
+            <tbody id="players-data">
             {% for player in players %}
-                <tr class="player-{{ player.id }}">
-                    <th class="user">{{ player.username }}</th>
-                    {% if player.playerName == "N/A" %}
-                        <th class="inexisting-character" colspan="{{ allowedCharacteristics|length +1 }}">Ce joueur n'a
-                            pas
-                            encore créé son personnage
-                        </th>
-                    {% else %}
-                        <th class="character">
-                            {{ player.playerName }}
-                            <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>
-                        </th>
-                        {% for canonicalAllowedCharacteristic in canonicalAllowedCharacteristics %}
-                            <th class="{{ canonicalAllowedCharacteristic }}">
-                                <input class="form-control characteristic" type="number"
-                                       value="{{ attribute(player.characteristics, canonicalAllowedCharacteristic) }}">
-                            </th>
+                {% if player.character %}
+                    <tr id="player-summary-{{ player.id }}" class="player-summary">
+                        <td class="user">{{ player.user.username }}</td>
+                        <td class="character">{{ player.character.name }}</td>
+                        {% for gameStatistic in gameStatistics %}
+                            <td class="{{ formatName(gameStatistic.name) }}">
+                                <input type="number" class="form-control" value="{{ attribute(attribute(usersStats, player.user.username), gameStatistic.name).value }}"
+                                id="statistic-{{ attribute(attribute(usersStats, player.user.username), gameStatistic.name).id }}">
+                            </td>
                         {% endfor %}
-                    {% endif %}
-                </tr>
-                <tr class="player-data" id="player-data-{{ player.id }}">
-                    <th colspan="{{ allowedCharacteristics|length +2 }}">
-                        {% if player.character %}
+                        <td class="dropdown-character">
+                            <button class="btn btn-default show-player-data"><span class="glyphicon glyphicon-chevron-down"></span></button>
+                        </td>
+                    </tr>
+                    <tr class="player-data" id="player-data-{{ player.id }}">
+                        <td colspan="{{ gameStatistics|length +3 }}">
                             <div class="row">
                                 <fieldset class="col-lg-6">
                                     <legend>Histoire</legend>
                                     <div class="media">
                                         <div class="media-left media-middle">
-                                            <img src="{{ asset('/img/tokens/' ~ player.character.token)|imagine_filter('large_token') }}"
-                                                 alt="">
+                                            <img src="{{ asset('/img/tokens/' ~ player.character.token)|imagine_filter('large_token') }}" alt="">
                                         </div>
                                         <div class="media-body text-justify">
                                             <p>{{ player.character.backStory }}</p>
@@ -90,128 +73,124 @@ une cohérence dans l'affichage #}
                                     </div>
                                 </fieldset>
                                 <fieldset class="col-lg-6">
-                                    <legend>Caractéristiques</legend>
+                                    <legend>Résumé</legend>
                                     <form class="form-horizontal">
-                                        {% for characteristic in player.character.characteristics %}
-                                            <div class="form-group characteristic">
-                                                <div class="panel-body">
-                                                    <label class="col-xs-2 col-lg-2 control-label">{{ characteristic.name }}</label>
-                                                    {% if characteristic.hasMax %}
-                                                        {% if characteristic.maxValue != 0 %}
-                                                            {% set width = characteristic.value / characteristic.maxValue *100 %}
-                                                        {% else %}
-                                                            {% set width = 100 %}
-                                                        {% endif %}
-                                                        <div class="col-xs-10 col-lg-10"
-                                                             style="margin-top:7px;">
-                                                            <div class="{{ formatName(characteristic.name) }}">
-                                                                <div class="progress">
-                                                                    <div class="progress-bar progress-bar-success progress-bar-striped active"
-                                                                         role="progressbar"
-                                                                         style="width:{{ width ~"%;" }}">
-                                                                        <span>{{ characteristic.value ~ '/' ~ characteristic.maxValue }}</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                        <div class="form-group">
+                                            <label for="nb-spells-max-{{ player.character.id }}" class="nb-spells-max col-sm-3 control-label">Nombre de sorts</label>
+                                            <div class="col-sm-8">
+                                                <input type="number" id="nb-spells-max-{{ player.character.id }}" class="form-control" value="{{ player.character.nbSpellsMax }}">
+                                            </div>
+                                        </div>
+                                        {% for statistic in player.character.statistics %}
+                                            <div class="form-group">
+                                                {% if statistic.hasMax %}
+                                                    {% if statistic.valueMax == 0 %}
+                                                        {% set width = '100%;' %}
                                                     {% else %}
-                                                        <div class="col-xs-10 col-lg-11 text-center"
-                                                             style="margin-top:7px;">
-                                                            <div class="{{ formatName(characteristic.name) }}">
-                                                                <span>{{ characteristic.value }}</span>
+                                                        {% set width = statistic.value / statistic.valueMax *100 ~ "%;" %}
+                                                    {% endif %}
+                                                    <label class="col-sm-3 control-label">{{ statistic.name }}</label>
+                                                    <div class="col-sm-8">
+                                                        <div class="progress">
+                                                            <div class="progress-bar " id="{{ formatName(statistic.name) }}-progress-{{ player.id }}" role="progressbar" style="width: {{ width }}">
+                                                                <span>{{ statistic.value ~ '/' ~ statistic.valueMax }}</span>
                                                             </div>
                                                         </div>
-                                                    {% endif %}
-                                                </div>
+                                                    </div>
+                                                {% endif %}
+                                            
                                             </div>
                                         {% endfor %}
                                     </form>
                                 </fieldset>
                             </div>
                             <div class="row">
-                                <fieldset>
+                                <fieldset class="col-lg-6">
+                                    <legend>Statistiques</legend>
+                                    <form class="form-horizontal">
+                                        {% for statistic in player.character.statistics %}
+                                            <div class="form-group">
+                                                {% if statistic.hasMax %}
+                                                    <label for="{{ formatName(statistic.name) ~ "-max-" ~ player.id }}" class="control-label col-sm-3">{{ statistic.name ~ " max" }}</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="number" id="{{ formatName(statistic.name) ~ "-max-" ~ player.id }}" class="form-control" value="{{ statistic.valueMax }}">
+                                                    </div>
+                                                
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    </form>
+                                </fieldset>
+                                <fieldset class="col-lg-6">
+                                    <legend>Caractéristiques</legend>
+                                    <form class="form-horizontal">
+                                        {% for characteristic in player.character.characteristics %}
+                                            <div class="form-group">
+                                                <label for="{{ characteristic.name ~ "-" ~ player.id }}" class="control-label col-sm-2">{{ characteristic.name }}</label>
+                                                <div class="col-sm-10">
+                                                    <input type="number" id="{{ characteristic.name ~ "-" ~ player.id }}" class="form-control" value="{{ characteristic.value }}">
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </form>
+                                
+                                </fieldset>
+                            </div>
+                            <div class="row">
+                                <fieldset class="col-lg-6">
                                     <legend>Sorts</legend>
                                     <div class="panel-body">
                                         <div class="row">
                                             <div class="list-group spells">
                                                 {% for spell in player.character.spells %}
-                                                    <div>
-                                                        <a href="javascript:void(0)" class="list-group-item">
-                                                            <h4 class="list-group-item-heading">{{ spell.name }}</h4>
-
-                                                            <div class="row">
-                                                                <div class="col-xs-8">
-                                                                    <p class="list-group-item-text">{{ spell.description }}</p>
-                                                                </div>
-                                                                <div class="col-xs-4">
-                                                                    <div class="row">
-                                                                        <div class="col-xs-6">
-                                                                            <input type="number" id="value-dice-player" placeholder="Dé" class="form-control">
-                                                                        </div>
-                                                                        <div class="col-xs-6">
-                                                                            <span id="damage-dice"></span>
-                                                                        </div>
-                                                                    </div>
-
-                                                                </div>
+                                                    <a href="javascript:void(0)" class="list-group-item">
+                                                        <h4 class="list-group-item-heading">{{ spell.name }}</h4>
+        
+                                                        <div class="row">
+                                                            <div class="col-xs-8">
+                                                                <p class="list-group-item-text">{{ spell.description }}</p>
                                                             </div>
-                                                        </a>
-                                                        <div class="spell-data">
-                                                            <div class="row">
-                                                                <div class="panel-body">
-                                                                    <div class="row">
-                                                                        <form class="form-inline">
-                                                                            <div class="form-group">
-                                                                                <label for="max-value-success" class="control-label col-sm-4 ">Valeur maximale de
-                                                                                    succès</label>
-                                                                                <div class="col-sm-2">
-                                                                                    <input type="number" id="max-value-success" class="form-control">
-                                                                                </div>
-                                                                            </div>
-                                                                        </form>
+                                                            <div class="col-xs-4">
+                                                                <div class="row">
+                                                                    <div class="col-xs-6">
+                                                                        <input type="number" id="value-dice-player" placeholder="Dé" class="form-control">
                                                                     </div>
-                                                                    <div class="row">
-                                                                        <div class="col-sm-6">
-                                                                            <h4 class="page-header">En cas de quasi-succès (2)</h4>
-                                                                            <label for="almost-success-max" class="control-label">Dégâts maximum</label>
-                                                                            <input id="almost-success-max" type="number" class="form-control">
-                                                                            <label for="almost-success-avg" class="control-label">Dégâts moyens</label>
-                                                                            <input id="almost-success-avg" class="form-control" type="number">
-                                                                        </div>
-                                                                        <div class="col-sm-6">
-                                                                            <h4 class="page-header">En cas de quasi-échec</h4>
-                                                                            <label for="almost-failure-max" class="control-label">Dégâts maximum</label>
-                                                                            <input id="almost-failure-max" class="form-control" type="number">
-                                                                            <label for="almost-failure-avg" class="control-label">Dégâts moyens</label>
-                                                                            <input id="almost-failure-avg" class="form-control" type="number">
-                                                                        </div>
+                                                                    <div class="col-xs-6">
+                                                                        <span id="damage-dice"></span>
                                                                     </div>
                                                                 </div>
+            
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </a>
                                                 {% endfor %}
                                             </div>
                                         </div>
-
                                     </div>
                                 </fieldset>
                             </div>
-                        {% else %}
-                            <div class="panel panel-default characteristic-panel">
-                                <div class="panel-body">
-                                    <p>Aucune donnée</p>
-                                </div>
-                            </div>
-                        {% endif %}
-                    </th>
-                </tr>
+                        </td>
+                    </tr>
+                
+                {% else %}
+                    <tr id="player-summary-{{ player.id }}">
+                        <td class="user">{{ player.user.username }}</td>
+                        <td colspan="{{ gameStatistics|length +2 }}">
+                            <table>
+                                <tr>
+                                    <td colspan="{{ gameStatistics|length +2 }}">Ce joueur n'a pas encore créer son personnage</td>
+                                </tr>
+                            </table>
+                        </td>
+                    
+                    </tr>
+                {% endif %}
+            
             {% endfor %}
-
             </tbody>
         </table>
     </div>
-
+    
     {% include 'AppBundle:GamePlay:menu-edit-progress-bar.html.twig' %}
 {% endblock %}
 
@@ -219,5 +198,6 @@ une cohérence dans l'affichage #}
     {{ parent() }}
     <script src= {{ asset('js/jquery-ui.min.js') }}></script>
     <script src="{{ asset('js/AppBundle/GamePlay/play_as_mj.js') }}"></script>
-    <script src="{{ asset('js/AppBundle/GamePlay/damage_helper.js') }}"></script>
+    {#<script src="{{ asset('js/AppBundle/GamePlay/damage_helper.js') }}"></script>#}
+
 {% endblock %}

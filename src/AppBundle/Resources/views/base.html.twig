@@ -81,6 +81,11 @@
     <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
     <script src="{{ path('fos_js_routing_js', {callback: 'fos.Router.setData'}) }}"></script>
+    <script>
+        $(".alert").fadeTo(5000, 500).slideUp(500, function(){
+            $(".alert").slideUp(500);
+        });
+    </script>
     <div id="js-vars" data-vars="{{ js_vars|json_encode|e('html_attr') }}"></div>
 
 {% endblock %}

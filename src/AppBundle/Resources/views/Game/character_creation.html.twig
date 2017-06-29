@@ -19,8 +19,6 @@
         {{ form_row(form.backstory) }}
     
         <label class="control-label">Caractéristiques</label>
-        <div class="col-xs-offset-1"><i>Votre maître du jeu vous accorde X points à répartir parmi les caractéristiques ci-dessus,
-                en veuillant à ne pas dépasser un maximum de Y par compétence</i></div>
         <ul class="list-unstyled">
             {# iterate over each existing tag and render its only field: name #}
             {% for characteristic in form.characteristics %}

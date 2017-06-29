@@ -56,6 +56,17 @@ class Statistic
     private $character;
 
 
+    /**
+     * Get name
+     * @return string
+     */
+    public function getName() : string{
+        return $this->getGameStatistic()->getName();
+    }
+
+    public function hasMax() : bool{
+        return $this->getGameStatistic()->getHasMax();
+    }
 
     /**
      * Get id

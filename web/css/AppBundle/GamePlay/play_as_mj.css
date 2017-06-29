@@ -1,36 +1,12 @@
-.progress{
-    margin-bottom: 5px;
-}
-
-#context-menu{
-    position:absolute;
-    display: none;
-}
-
-#context-menu .dropdown-menu{
-    display:block;
-    position:static;
-    margin-bottom:5px;
-}
-
-#context-menu .progress-bar{
-    width:100%;
-}
-
-.inexisting-character{
+.missing-character{
     text-align:center;
 }
 
-.character{
-    display: flex;
-    justify-content: space-between;
-}
-
 .player-data{
-    display:none;
+    display: none;
 }
 
-.progress {
+.progress{
     position: relative;
 }
 
