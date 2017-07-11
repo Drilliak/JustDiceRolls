@@ -14,8 +14,8 @@
             <div class="row">
                 <div class="list-group col-lg-6">
                     <a href="{{ path('game_play_as_player', {'idGame': player.game.id }) }}" class="list-group-item">
-                        <h4 class="list-group-item-heading">{{ player.game.name }}</h4>
-                        <small class="pull-right">{{ player.game.gamemaster.username }}</small>
+                        <h4 class="d-f">{{ player.game.name }}</h4>
+                        <small class="text-muted">{{ player.game.gamemaster.username }}</small>
                         <p class="list-group-item-text">{{ player.game.description|truncate(100, true) }}</p>
                     </a>
                 </div>

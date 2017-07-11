@@ -1,9 +1,8 @@
 <?php
 
 namespace AppBundle\Repository;
+
 use AppBundle\Entity\Player;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Query;
 
 /**
  * ParticipantsRepository
@@ -16,10 +15,13 @@ class PlayerRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * Renvoie tout les utilisateur d'une partie
+     *
      * @param $idGame
+     *
      * @return array|null
      */
-    public function findPlayers($idGame){
+    public function findPlayers($idGame)
+    {
         $query = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('p')
@@ -42,7 +44,8 @@ class PlayerRepository extends \Doctrine\ORM\EntityRepository
      *
      * @return null|Player
      */
-    public function findPlayer($idGame, $idUser) {
+    public function findPlayer($idGame, $idUser)
+    {
         $query = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('p')
@@ -54,8 +57,32 @@ class PlayerRepository extends \Doctrine\ORM\EntityRepository
             ->setParameters(['idGame' => $idGame, 'idUser' => $idUser])
             ->getQuery();
 
-        try{
+        try {
             return $query->getSingleResult();
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Renvoie tous les joueurs d'une partie dont l'id n'est pas celui passé en paramètre.
+     *
+     * @param $idGame   int ID de la partie
+     * @param $idPlayer int ID du joueur à ne pas prendre
+     *
+     * @return array|null
+     */
+    public function findOtherPlayers($idGame, $idPlayer)
+    {
+        $query = $this->createQueryBuilder('p')
+            ->where('p.game = :idGame')
+            ->andWhere('p.id != :idPlayer')
+            ->join('p.game', 'g')
+            ->setParameters(['idGame' => $idGame, 'idPlayer' => $idPlayer])
+            ->getQuery();
+
+        try {
+            return $query->getResult();
         } catch (\Doctrine\ORM\NoResultException $e) {
             return null;
         }

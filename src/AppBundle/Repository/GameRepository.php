@@ -1,7 +1,6 @@
 <?php
 
 namespace AppBundle\Repository;
-
 /**
  * GameRepository
  *

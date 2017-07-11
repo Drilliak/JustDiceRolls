@@ -17,7 +17,9 @@
 {% block content %}
     <div class="container">
         <div class="row">
+            <ul class="chat">
             
+            </ul>
             <a class="pull-right btn btn-default" data-toggle="tooltip"
                title="Éditer la configuration de la partie" href="{{ path('game_edition', {'idGame': gameId}) }}"><span
                         class="glyphicon glyphicon-cog"></span></a>
@@ -51,7 +53,7 @@
                         {% for gameStatistic in gameStatistics %}
                             <td class="{{ formatName(gameStatistic.name) }}">
                                 <input type="number" class="form-control" value="{{ attribute(attribute(usersStats, player.user.username), gameStatistic.name).value }}"
-                                id="statistic-{{ attribute(attribute(usersStats, player.user.username), gameStatistic.name).id }}">
+                                       id="statistic-{{ attribute(attribute(usersStats, player.user.username), gameStatistic.name).id }}">
                             </td>
                         {% endfor %}
                         <td class="dropdown-character">
@@ -68,7 +70,7 @@
                                             <img src="{{ asset('/img/tokens/' ~ player.character.token)|imagine_filter('large_token') }}" alt="">
                                         </div>
                                         <div class="media-body text-justify">
-                                            <p>{{ player.character.backStory }}</p>
+                                            <p>{{ player.character.backStory|truncate(20,true, '<a href="">...</a>')|raw }}</p>
                                         </div>
                                     </div>
                                 </fieldset>
@@ -76,9 +78,10 @@
                                     <legend>Résumé</legend>
                                     <form class="form-horizontal">
                                         <div class="form-group">
-                                            <label for="nb-spells-max-{{ player.character.id }}" class="nb-spells-max col-sm-3 control-label">Nombre de sorts</label>
+                                            <label for="nb-spells-max-{{ player.character.id }}" class="col-sm-3 control-label">Nombre de sorts</label>
                                             <div class="col-sm-8">
-                                                <input type="number" id="nb-spells-max-{{ player.character.id }}" class="form-control" value="{{ player.character.nbSpellsMax }}">
+                                                <input type="number" id="nb-spells-max-{{ player.character.id }}" class="form-control nb-spells-max"
+                                                       value="{{ player.character.nbSpellsMax }}">
                                             </div>
                                         </div>
                                         {% for statistic in player.character.statistics %}
@@ -92,7 +95,8 @@
                                                     <label class="col-sm-3 control-label">{{ statistic.name }}</label>
                                                     <div class="col-sm-8">
                                                         <div class="progress">
-                                                            <div class="progress-bar " id="{{ formatName(statistic.name) }}-progress-{{ player.id }}" role="progressbar" style="width: {{ width }}">
+                                                            <div class="progress-bar " id="{{ formatName(statistic.name) }}-progress-{{ player.id }}" role="progressbar"
+                                                                 style="width: {{ width }}">
                                                                 <span>{{ statistic.value ~ '/' ~ statistic.valueMax }}</span>
                                                             </div>
                                                         </div>
@@ -105,15 +109,17 @@
                                 </fieldset>
                             </div>
                             <div class="row">
-                                <fieldset class="col-lg-6">
+                                <fieldset class="col-lg-6 statistics">
                                     <legend>Statistiques</legend>
                                     <form class="form-horizontal">
                                         {% for statistic in player.character.statistics %}
                                             <div class="form-group">
                                                 {% if statistic.hasMax %}
-                                                    <label for="{{ formatName(statistic.name) ~ "-max-" ~ player.id }}" class="control-label col-sm-3">{{ statistic.name ~ " max" }}</label>
+                                                    <label for="{{ formatName(statistic.name) ~ "-max-" ~ statistic.id }}"
+                                                           class="control-label col-sm-3">{{ statistic.name ~ " max" }}</label>
                                                     <div class="col-sm-8">
-                                                        <input type="number" id="{{ formatName(statistic.name) ~ "-max-" ~ player.id }}" class="form-control" value="{{ statistic.valueMax }}">
+                                                        <input type="number" id="{{ formatName(statistic.name) ~ "-max-" ~ statistic.id }}" class="form-control max-stat"
+                                                               value="{{ statistic.valueMax }}">
                                                     </div>
                                                 
                                                 {% endif %}
@@ -121,14 +127,15 @@
                                         {% endfor %}
                                     </form>
                                 </fieldset>
-                                <fieldset class="col-lg-6">
+                                <fieldset class="col-lg-6 characteristics">
                                     <legend>Caractéristiques</legend>
                                     <form class="form-horizontal">
                                         {% for characteristic in player.character.characteristics %}
                                             <div class="form-group">
-                                                <label for="{{ characteristic.name ~ "-" ~ player.id }}" class="control-label col-sm-2">{{ characteristic.name }}</label>
+                                                <label for="{{ characteristic.name ~ "-" ~ characteristic.id }}" class="control-label col-sm-2">{{ characteristic.name }}</label>
                                                 <div class="col-sm-10">
-                                                    <input type="number" id="{{ characteristic.name ~ "-" ~ player.id }}" class="form-control" value="{{ characteristic.value }}">
+                                                    <input type="number" id="{{ characteristic.name ~ "-" ~ characteristic.id }}" class="form-control charac-value"
+                                                           value="{{ characteristic.value }}">
                                                 </div>
                                             </div>
                                         {% endfor %}
@@ -137,7 +144,7 @@
                                 </fieldset>
                             </div>
                             <div class="row">
-                                <fieldset class="col-lg-6">
+                                <fieldset class="col-lg-12">
                                     <legend>Sorts</legend>
                                     <div class="panel-body">
                                         <div class="row">
@@ -145,22 +152,8 @@
                                                 {% for spell in player.character.spells %}
                                                     <a href="javascript:void(0)" class="list-group-item">
                                                         <h4 class="list-group-item-heading">{{ spell.name }}</h4>
-        
-                                                        <div class="row">
-                                                            <div class="col-xs-8">
-                                                                <p class="list-group-item-text">{{ spell.description }}</p>
-                                                            </div>
-                                                            <div class="col-xs-4">
-                                                                <div class="row">
-                                                                    <div class="col-xs-6">
-                                                                        <input type="number" id="value-dice-player" placeholder="Dé" class="form-control">
-                                                                    </div>
-                                                                    <div class="col-xs-6">
-                                                                        <span id="damage-dice"></span>
-                                                                    </div>
-                                                                </div>
-            
-                                                            </div>
+                                                        <div class="list-group-item-text">
+                                                            <p>{{ spell.description }}</p>
                                                         </div>
                                                     </a>
                                                 {% endfor %}
@@ -190,7 +183,6 @@
             </tbody>
         </table>
     </div>
-    
     {% include 'AppBundle:GamePlay:menu-edit-progress-bar.html.twig' %}
 {% endblock %}
 

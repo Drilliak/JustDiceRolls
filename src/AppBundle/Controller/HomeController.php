@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\GameCharacteristic;
 use AppBundle\Entity\GameStatistic;
 use AppBundle\Form\GameType;
+use AppBundle\Sockets\Chat;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Entity\Game;
 use Symfony\Component\Form\Form;
@@ -44,6 +45,7 @@ class HomeController extends Controller
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($game);
+
             $em->flush();
 
             return $this->redirectToRoute('game_edition', ['idGame' => $game->getId()]);
@@ -54,7 +56,6 @@ class HomeController extends Controller
 
     public function testAction()
     {
-
 
     }
 }

@@ -4,19 +4,116 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/AppBundle/GamePlay/play_as_player.css') }}">
 {% endblock %}
 
 {% block content %}
     <div class="container">
-
         <div class="row">
             <a class="pull-right btn btn-default" data-toggle="tooltip"
                title="Modifier le personnage" href="{{ path('edit_character', {'idGame': gameId}) }}"><span
                         class="glyphicon glyphicon-cog"></span></a>
         </div>
+        
+        <ul class="chat">
+        
+        </ul>
+        <div class="row">
+            <div class="col-sm-6" id="my-character">
+                <div class="list-group">
+                    <div class="list-group-item">
+                        <h2 class="text-center">{{ character.name }}</h2>
+                        <form class="form-horizontal">
+                            <fieldset>
+                                <legend>Statistiques</legend>
+                                {% for statistic in character.statistics %}
+                                    {% if statistic.hasMax %}
+                                        {% if statistic.valueMax == 0 %}
+                                            {% set width = '100%;' %}
+                                        {% else %}
+                                            {% set width = statistic.value / statistic.valueMax *100 ~ "%;" %}
+                                        {% endif %}
+                                        <label class="col-sm-2 control-label">{{ statistic.name }}</label>
+                                        <div class="col-sm-10">
+                                            <div class="progress">
+                                                <div class="progress-bar " role="progressbar"
+                                                     style="width: {{ width }}">
+                                                    <span>{{ statistic.value ~ '/' ~ statistic.valueMax }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">{{ statistic.name }}</label>
+                                            <div class="col-sm-10 text-center">
+                                                <span id="my-stat-{{ statistic.id }}"><strong>{{ statistic.value }}</strong></span>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </fieldset>
+                            <fieldset>
+                                <legend>Caractéristiques</legend>
+                                {% for characteristic in character.characteristics %}
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">{{ characteristic.name|trim }}</label>
+                                        <div class="col-sm-10 text-center">
+                                            <span id="my-characteristic-{{ characteristic.id }}"><strong>{{ characteristic.value }}</strong></span>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </fieldset>
+                            <fieldset>
+                                <legend>Sorts</legend>
+                                <div class="list-group">
+                                    {% for spell in character.spells %}
+                                        <div class="list-group-item">
+                                            <h4 class="list-group-item-heading">{{ spell.name }}</h4>
+                                            <p class="list-group-item-text">{{ spell.description }}</p>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </fieldset>
+                        
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6" id="other-characters">
+                <div class="list-group">
+                    {% for otherPlayer in otherPlayers %}
+                        <div class="list-group-item">
+                            <h4 class="list-group-item-heading">{{ otherPlayer.character.name }}</h4>
+                            <div class="col-sm-9">
+                                <form>
+                                    <fieldset>
+                                        <label class="col-sm-2 control-label">PV</label>
+                                        <div class="col-sm-10">
+                                            <div class="progress">
+                                                <div class="progress-bar " role="progressbar" style="width: 90%;"></div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </form>
+                            </div>
+                            <div class="col-sm-3 pull-right">
+                                <img src="{{ asset('img/tokens/' ~ otherPlayer.character.token) }}" class="list-group-item-text pull-right" style="width:60px">
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        
     </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+    <script>
+        let jsVars = jQuery('#js-vars').data('vars').charData;
+    </script>
+    <script src="{{ asset('js/AppBundle/GamePlay/socket_player.js') }}"></script>
+    
 {% endblock %}

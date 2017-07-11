@@ -85,7 +85,6 @@ class Game
     }
 
 
-
     public function getName()
     {
         return $this->name;
@@ -167,7 +166,6 @@ class Game
     }
 
 
-
     /**
      * Set nbSpellsMax
      *
@@ -180,9 +178,9 @@ class Game
         $this->nbSpellsMax = $nbSpellsMax;
 
         /** @var Player $player */
-        foreach ($this->players as $player){
+        foreach ($this->players as $player) {
             $character = $player->getCharacter();
-            if ($character != null){
+            if ($character != null) {
                 $character->setNbSpellsMax($nbSpellsMax);
                 $player->setCharacter($character);
             }

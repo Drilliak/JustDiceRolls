@@ -44,6 +44,12 @@ class Spell
      */
     private $playerCharacter;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Characteristic")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $characteristic;
+
 
 
     /**
@@ -126,5 +132,29 @@ class Spell
     public function getPlayerCharacter()
     {
         return $this->playerCharacter;
+    }
+
+    /**
+     * Set characteristic
+     *
+     * @param \AppBundle\Entity\Characteristic $characteristic
+     *
+     * @return Spell
+     */
+    public function setCharacteristic(\AppBundle\Entity\Characteristic $characteristic = null)
+    {
+        $this->characteristic = $characteristic;
+
+        return $this;
+    }
+
+    /**
+     * Get characteristic
+     *
+     * @return \AppBundle\Entity\Characteristic
+     */
+    public function getCharacteristic()
+    {
+        return $this->characteristic;
     }
 }

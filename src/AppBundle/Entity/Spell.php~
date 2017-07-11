@@ -33,16 +33,104 @@ class Spell
 
     /**
      * @var string
-     * @ORM\Column(name="descritpion", type="text", nullable=false)
+     * @ORM\Column(name="description", type="text", nullable=false)
      */
     private $description;
 
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PlayerCharacter")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PlayerCharacter", inversedBy="spells")
      * @ORM\JoinColumn(nullable=true)
      */
     private $playerCharacter;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Characteristic")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $characteristic;
 
+
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     *
+     * @return Spell
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Spell
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set playerCharacter
+     *
+     * @param \AppBundle\Entity\PlayerCharacter $playerCharacter
+     *
+     * @return Spell
+     */
+    public function setPlayerCharacter(\AppBundle\Entity\PlayerCharacter $playerCharacter = null)
+    {
+        $this->playerCharacter = $playerCharacter;
+
+        return $this;
+    }
+
+    /**
+     * Get playerCharacter
+     *
+     * @return \AppBundle\Entity\PlayerCharacter
+     */
+    public function getPlayerCharacter()
+    {
+        return $this->playerCharacter;
+    }
 }
