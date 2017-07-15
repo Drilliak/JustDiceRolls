@@ -25,8 +25,27 @@ services:
             - "@app.name_formatter"
         tags:
             - { name: twig.extension }
-    Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
-        public: false
+    pdo:
+        class: PDO
         arguments:
-            - 'mysql:host=%database_host%;dbname=%database_name%'
-            - { db_username: '%database_user%', db_password: '%database_password%'}
+            - "mysql:host=%database_host%;dbname=%database_name%"
+            - "%database_user%"
+            - "%database_password%"
+        calls:
+            - [ setAttribute, [3,2]]
+    session.handler.pdo:
+        class: Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
+        arguments:
+            - "@pdo"
+            - { lock_mode: 0 }
+    acme_hello.rpc_sample_service:
+        class: AppBundle\Socket\AcmeService
+        tags:
+            - { name: gos_web_socket.rpc }
+    acme_hello.topic_sample.service:
+        class: AppBundle\Socket\AcmeTopic
+        arguments:
+            - "@gos_web_socket.websocket.client_manipulator"
+            - "@doctrine"
+        tags:
+            - { name: gos_web_socket.topic }

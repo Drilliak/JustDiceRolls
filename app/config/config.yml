@@ -26,9 +26,7 @@ framework:
     default_locale: '%locale%'
     trusted_hosts: ~
     session:
-        handler_id: Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
-        cookie_lifetime: 86400
-        gc_maxlifetime: 86400
+        handler_id: session.handler.pdo
 #        handler_id:  session.handler.native_file
 #        save_path:   "%kernel.root_dir%/../var/sessions/%kernel.environment%"
     fragments: ~
@@ -98,3 +96,21 @@ liip_imagine:
                 thumbnail:
                     size: [128,128]
                     mode: outbound
+gos_web_socket:
+    server:
+        port: 8080
+        host: localhost
+        router:
+            resources:
+                - '@AppBundle/Resources/config/pubsub/routing.yml'
+    client:
+        firewall: main
+        session_handler: "@session.handler.pdo"
+    pushers:
+        zmq:
+            default: true
+            host: localhost
+            port: 5555
+            persistent: true
+            protocol: tcp
+

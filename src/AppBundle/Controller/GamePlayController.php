@@ -57,6 +57,8 @@ class GamePlayController extends Controller
             "gameId"   => $game->getId(),
         ];
 
+
+
         return $this->render("AppBundle:GamePlay:play_as_mj.html.twig", [
                 "gameName"       => $game->getName(),
                 "gameId"         => $game->getId(),
@@ -104,12 +106,7 @@ class GamePlayController extends Controller
 
         $name = $stat->getName();
 
-        $context = new \ZMQContext();
-        $socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'my sock');
-        $socketAddr = $this->getParameter('app.socket_addr');
-        $pusherPort = $this->getParameter('app.pusher_port');
-        $socket->connect("tcp://$socketAddr:$pusherPort");
-        $socket->send(json_encode(['test']));
+        $pusher = $this->get('gos_web_socket.zmq.pusher');
 
         return new JsonResponse(['message' => "Statistic $name is now equal to $value."]);
 
@@ -173,10 +170,7 @@ class GamePlayController extends Controller
 
         $otherPlayers = $playerRepository->findOtherPlayers($idGame, $player->getId());
 
-        $this->get('acme.js_vars')->charData = [
-            "socketAddr" => $this->getParameter('app.socket_addr'),
-            "socketPort" => $this->getParameter('app.socket_port')
-        ];
+
 
         return $this->render('@App/GamePlay/play_as_player.html.twig', [
             'gameName'     => $game->getName(),

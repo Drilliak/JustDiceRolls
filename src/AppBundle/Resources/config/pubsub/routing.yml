@@ -1,0 +1,7 @@
+acme_topic:
+    channel: acme/channel/{idGame}
+    handler:
+        callback: 'acme.topic'
+    requirements:
+        idGame:
+            path: "[0-9]+"

@@ -111,9 +111,9 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script>
-        let jsVars = jQuery('#js-vars').data('vars').charData;
-    </script>
+    <script src="{{ asset('bundles/goswebsocket/js/vendor/autobahn.min.js') }}"></script>
+    <script src="{{ asset('bundles/goswebsocket/js/gos_web_socket_client.js') }}"></script>
+    <script>const WS_URI = "ws://{{ gos_web_socket_server_host }}:{{ gos_web_socket_server_port }}";</script>
     <script src="{{ asset('js/AppBundle/GamePlay/socket_player.js') }}"></script>
     
 {% endblock %}

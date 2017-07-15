@@ -29,4 +29,18 @@ class GameRepository extends \Doctrine\ORM\EntityRepository
     }
 
 
+    public function hasUser($idGame, $username){
+        $query = $this->createQueryBuilder('g')
+            ->where('g.id = :idGame')
+            ->andWhere('u.username = :username')
+            ->join('g.players', 'p')
+            ->join('p.user', 'u')
+            ->setParameters(['idGame' => $idGame, 'username' =>$username])
+            ->getQuery();
+
+        return (boolean) $query->getOneOrNullResult();
+
+    }
+
+
 }

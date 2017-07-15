@@ -1,17 +1,12 @@
-// web/js/AppBuncle/GamePlay/socket_player.js
+let webSocket = WS.connect(WS_URI);
 
-let socketAddr = jsVars.socketAddr;
-let socketPort = jsVars.socketPort;
+webSocket.on("socket/connect", function(session){
+   session.subscribe("acme/channel/1", function(uri, payload){
+       console.log('Received message', payload.msg);
+   });
 
-let conn = new WebSocket(`ws://${socketAddr}:${socketPort}`);
-conn.onopen = function(e) {
-    console.info("Connection established succesfully");
-};
+});
 
-conn.onmessage = function(e) {
-    console.log(e);
-};
-
-conn.onerror = function(e){
-    console.error(e);
-};
+webSocket.on("socket/disconnect", function(error){
+    console.log("Disconnected for " + error.reason + " with code " + error.code);
+});
