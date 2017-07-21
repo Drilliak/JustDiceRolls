@@ -19,7 +19,7 @@ use Ratchet\Wamp\Topic;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use UserBundle\Entity\User;
 
-class AcmeTopic implements TopicInterface, PushableTopicInterface
+class GamePlayTopic implements TopicInterface, PushableTopicInterface
 {
 
     /**
@@ -38,19 +38,36 @@ class AcmeTopic implements TopicInterface, PushableTopicInterface
 
     public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
     {
+        // Si le joueur n'envoie pas les bons attributs par le socket, c'est qu'il a modifié le code js
+        // On le déconnecte
+        $attributes = $request->getAttributes();
+        if (!$attributes->has('idGame') || !$attributes->has('username')){
+            $connection->close();
+            return;
+        }
 
+        $userNameSent = $attributes->get('username');
         $user = $this->clientManipulator->getClient($connection);
+
+        // Si le nom envoyé est différent de celui récupéré en BDD grâce à la session, c'est que l'utilisateur
+        // a modifié le code JS, on le déconnecte.
+        if ($userNameSent !== $user->getUsername()){
+            $connection->close();
+            return;
+        }
+
         $repository = $this->registry->getManager()->getRepository('AppBundle:Game');
 
         /**
          * @var boolean $isPlayerGame TRUE si le joueur faisant la requête est un joueur de la partie
          *                            FALSE sinon
          */
-        $isPlayerGame = $repository->hasUser(1, $user->getUsername());
+        $isPlayerGame = $repository->hasUser($attributes->get('idGame'), $user->getUsername());
 
         // Si le joueur ne fait pas partie de la partie, on le déconnecte
         if (!$isPlayerGame){
             $connection->close();
+            return;
         }
 
         $topic->broadcast(['msg' => $user . " has joined " . $topic->getId()]);
@@ -72,11 +89,12 @@ class AcmeTopic implements TopicInterface, PushableTopicInterface
 
     public function getName()
     {
-        return 'acme.topic';
+        return 'gameplay.topic';
     }
 
     public function onPush(Topic $topic, WampRequest $request, $data, $provider)
     {
 
+        $topic->broadcast(['msg' => $data]);
     }
 }

@@ -78,7 +78,8 @@ class GamePlayController extends Controller
             case "change-stat-value":
                 $value = (int)strip_tags($request->get('value'));
                 $statId = (int)strip_tags($request->get('statId'));
-                return $this->changeStatValue($statId, $value);
+                $username = strip_tags($request->get('username'));
+                return $this->changeStatValue($statId, $value, $username);
             case  "change-nb-spells":
                 $value = (int)strip_tags($request->get('value'));
                 $playerId = (int)strip_tags($request->get('playerId'));
@@ -96,8 +97,9 @@ class GamePlayController extends Controller
         return new Response("This is not an AJAX request");
     }
 
-    private function changeStatValue($statId, $value)
+    private function changeStatValue($statId, $value, $username)
     {
+        // TODO ajouter vérification sur l'username envoyé
         $em = $this->getDoctrine()->getManager();
         $statRepository = $em->getRepository('AppBundle:Statistic');
         $stat = $statRepository->find($statId);
@@ -107,6 +109,7 @@ class GamePlayController extends Controller
         $name = $stat->getName();
 
         $pusher = $this->get('gos_web_socket.zmq.pusher');
+        $pusher->push(json_encode(['action' => 'changeStatValue', 'statId' => $statId, 'value' => $value]), 'player_channel', ['idGame' => 1, 'username' => $username]);
 
         return new JsonResponse(['message' => "Statistic $name is now equal to $value."]);
 

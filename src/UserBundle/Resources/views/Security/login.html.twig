@@ -15,11 +15,8 @@
                 <div class="panel panel-login">
                     <div class="panel-heading">
                         <div class="row">
-                            <div class="col-xs-6">
-                                <a href="#" class="active" id="login-form-link">Se connecter</a>
-                            </div>
-                            <div class="col-xs-6">
-                                <a href="#" id="register-form-link">S'inscrire</a>
+                            <div class="col-xs-offset-6 col-xs-6">
+                                <a href="{{ path('fos_user_registration_register') }}" class="active" id="register-form-link">S'inscrire</a>
                             </div>
                         </div>
                         <hr>
@@ -68,7 +65,7 @@
                                         </div>
                                     </div>
                                 </form>
-                                {{ render(controller("FOSUserBundle:Registration:register")) }}
+                                
                             </div>
                         </div>
                     </div>

@@ -2,7 +2,6 @@ let jsVars = jQuery('#js-vars').data('vars').charData;
 
 let ajaxPath = Routing.generate('game_play_mj_ajax');
 
-let debug = true;
 /**
  * Affiche ou masque les caractéristiques complètes du joueur
  */

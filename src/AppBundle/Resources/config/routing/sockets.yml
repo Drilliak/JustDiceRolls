@@ -1,0 +1,9 @@
+player_channel:
+    channel: player-channel/{idGame}/{username}
+    handler:
+        callback: 'gameplay.topic'
+    requirements:
+        idGame:
+            path: "[0-9]+"
+        username:
+            path: "."

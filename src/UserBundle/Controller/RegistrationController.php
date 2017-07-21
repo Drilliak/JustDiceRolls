@@ -12,11 +12,13 @@ use FOS\UserBundle\Model\UserManagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-
+use UserBundle\Recaptcha;
 
 
 class RegistrationController extends BaseController
 {
+
+    const SECRET_RECAPTCHA = "6LdvYykUAAAAAMEzMsdaeySirSPGu9elk5wu2-VC";
 
   public function registerAction(Request $request)
   {
@@ -43,7 +45,9 @@ class RegistrationController extends BaseController
       $form->handleRequest($request);
 
       if ($form->isSubmitted()) {
+
           if ($form->isValid()) {
+
               $event = new FormEvent($form, $request);
               $dispatcher->dispatch(FOSUserEvents::REGISTRATION_SUCCESS, $event);
 
@@ -69,7 +73,7 @@ class RegistrationController extends BaseController
       }
 
 
-      return $this->render('@FOSUser/Registration/register.html.twig', array(
+      return $this->render('UserBundle:Registration:register.html.twig', array(
           'form' => $form->createView(),
       ));
   }

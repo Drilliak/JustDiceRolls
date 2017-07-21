@@ -38,12 +38,8 @@ services:
         arguments:
             - "@pdo"
             - { lock_mode: 0 }
-    acme_hello.rpc_sample_service:
-        class: AppBundle\Socket\AcmeService
-        tags:
-            - { name: gos_web_socket.rpc }
-    acme_hello.topic_sample.service:
-        class: AppBundle\Socket\AcmeTopic
+    topic.gameplay:
+        class: AppBundle\Socket\GamePlayTopic
         arguments:
             - "@gos_web_socket.websocket.client_manipulator"
             - "@doctrine"

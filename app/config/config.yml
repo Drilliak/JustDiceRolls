@@ -102,15 +102,14 @@ gos_web_socket:
         host: localhost
         router:
             resources:
-                - '@AppBundle/Resources/config/pubsub/routing.yml'
+                - '@AppBundle/Resources/config/routing/sockets.yml'
     client:
         firewall: main
         session_handler: "@session.handler.pdo"
     pushers:
         zmq:
             default: true
-            host: localhost
+            host: 127.0.0.1
             port: 5555
             persistent: true
             protocol: tcp
-

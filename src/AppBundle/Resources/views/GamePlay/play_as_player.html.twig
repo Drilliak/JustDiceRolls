@@ -113,7 +113,11 @@
     {{ parent() }}
     <script src="{{ asset('bundles/goswebsocket/js/vendor/autobahn.min.js') }}"></script>
     <script src="{{ asset('bundles/goswebsocket/js/gos_web_socket_client.js') }}"></script>
-    <script>const WS_URI = "ws://{{ gos_web_socket_server_host }}:{{ gos_web_socket_server_port }}";</script>
-    <script src="{{ asset('js/AppBundle/GamePlay/socket_player.js') }}"></script>
+    <script>
+        const WS_URI = "ws://{{ gos_web_socket_server_host }}:{{ gos_web_socket_server_port }}";
+        const USERNAME = "{{ app.user.username }}";
+        const GAME_ID = "{{ gameId }}";
+    </script>
+    <script src="{{ asset('bundles/app/js/Gameplay/SocketPlayer.js') }}"></script>
     
 {% endblock %}
