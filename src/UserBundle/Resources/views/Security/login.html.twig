@@ -6,7 +6,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link href="{{ asset('css/UserBundle/Security/login.css') }}" rel="stylesheet"/>
+    <link href="{{ asset('bundles/user/css/login.css') }}" rel="stylesheet"/>
 {% endblock %}
 {% block body %}
     <div class="container">
@@ -15,7 +15,7 @@
                 <div class="panel panel-login">
                     <div class="panel-heading">
                         <div class="row">
-                            <div class="col-xs-offset-6 col-xs-6">
+                            <div class="col-xs-offset-3 col-xs-6">
                                 <a href="{{ path('fos_user_registration_register') }}" class="active" id="register-form-link">S'inscrire</a>
                             </div>
                         </div>

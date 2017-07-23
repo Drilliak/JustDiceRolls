@@ -6,11 +6,6 @@ parameters:
 services:
     fos_user.doctrine_registry:
         alias: doctrine
-    sdz_user.registration_complet:
-        class: AppBundle\EventListener\RegistrationConfirmListener
-        arguments: ["@router"]
-        tags:
-            - { name: kernel.event_subscriber }
     acme.js_vars:
         class: stdClass
     twig.extension.text:
@@ -45,3 +40,9 @@ services:
             - "@doctrine"
         tags:
             - { name: gos_web_socket.topic }
+#    user.registration_complete:
+#        class: UserBundle\Listener\RegistrationListener
+#        arguments:
+#            - "@router"
+#        tags:
+#            - { name: kernel.event_subscriber }
